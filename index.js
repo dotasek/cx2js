@@ -455,43 +455,41 @@ exports.cxToJs = class CxToJs {
             if (!cyAttributeName) {
                 cyAttributeName = self.specialCaseAttributeMap[attributeName];
                 if (cyAttributeName) {
-                    return cyAttributeName;
+                    return cyAttributeName
                 }
 
-                attributeNameMap[attributeName] = attributeName; // direct mapping
-                cyAttributeName = attributeName;
+                attributeNameMap[attributeName] = attributeName // direct mapping
+                cyAttributeName = attributeName
             }
 
-            return cyAttributeName;
+            return cyAttributeName
         }
 
         this.sanitizeAttributeNameMap = function (attributeNameMap) {
-            var attributeNames = Object.keys(attributeNameMap);
-            var uniqueCounter = 1;
+            var attributeNames = Object.keys(attributeNameMap)
+            var uniqueCounter = 1
             attributeNames.forEach(function (attributeName) {
                 // handle attribute names that conflict with reserved names used by cyjs
-                var specialCaseName = self.specialCaseAttributeMap[attributeName];
+                var specialCaseName = self.specialCaseAttributeMap[attributeName]
                 if (specialCaseName) {
-                    attributeNameMap[attributeName] = specialCaseName;
+                    attributeNameMap[attributeName] = specialCaseName
                 } else if (/^[A-Za-z][A-Za-z0-9]*$/.test(attributeName)) { // name is ok
-                    attributeNameMap[attributeName] = attributeName;
+                    attributeNameMap[attributeName] = attributeName
                 } else {
                     // We will map the name to a modified name
                     // cyjs requires that attribute names avoid special characters, so names with
                     // special characters must be transformed and mapped.
                     // `^[^a-zA-Z_]+|[^a-zA-Z_0-9]+
 
-                    var nonAlpha = attributeName.replace(/^[^a-zA-Z_]+|[^a-zA-Z_0-9]+/gi, '_');
-                    nonAlpha = nonAlpha + '_u' + uniqueCounter;
-                    uniqueCounter = uniqueCounter + 1;
-                    attributeNameMap[attributeName] = nonAlpha;
+                    var nonAlpha = attributeName.replace(/^[^a-zA-Z_]+|[^a-zA-Z_0-9]+/gi, '_')
+                    nonAlpha = nonAlpha + '_u' + uniqueCounter
+                    uniqueCounter = uniqueCounter + 1
+                    attributeNameMap[attributeName] = nonAlpha
                 }
 
-            });
+            })
 
-        };
-
-
+        }
 
         /*
          * Get the first element from the list of elements.  Attributes of node or edge of this first element will be
@@ -508,10 +506,10 @@ exports.cxToJs = class CxToJs {
 
             var type = (attributeObj && attributeObj.d) ? attributeObj.d : 'list_of_string';
             var attrValue = (attributeObj && attributeObj.v && attributeObj.v[0]) ? attributeObj.v[0] : '';
-            var retValue;
+            var retValue
 
             if (type === 'list_of_string' || type === 'list_of_boolean') {
-                retValue = attrValue;
+                retValue = attrValue
 
                 /*   } else if (type == 'list_of_boolean') {
                        // N.B.: for list of booleans, we take the first value and return it as
@@ -524,28 +522,28 @@ exports.cxToJs = class CxToJs {
                 retValue = parseFloat(attrValue);
             }
 
-            return retValue;
-        };
+            return retValue
+        }
 
         this.cyColorFromCX = function (hex) {
-            hex = hex.replace('#', '');
-            var r = parseInt(hex.substring(0, 2), 16);
-            var g = parseInt(hex.substring(2, 4), 16);
-            var b = parseInt(hex.substring(4, 6), 16);
+            hex = hex.replace('#', '')
+            var r = parseInt(hex.substring(0, 2), 16)
+            var g = parseInt(hex.substring(2, 4), 16)
+            var b = parseInt(hex.substring(4, 6), 16)
 
-            return 'rgb(' + r + ',' + g + ',' + b + ')';
-        };
+            return 'rgb(' + r + ',' + g + ',' + b + ')'
+        }
 
         this.cyNumberFromString = function (string) {
-            return parseFloat(string);
-        };
+            return parseFloat(string)
+        }
 
         // Opacity conversion
         // convert from 0-255 to 0-1.
         this.cyOpacityFromCX = function (string) {
-            var trans = parseInt(string);
-            return trans / 255.0;
-        };
+            var trans = parseInt(string)
+            return trans / 255.0
+        }
 
 
         /*
@@ -588,19 +586,20 @@ exports.cxToJs = class CxToJs {
                 result.push(entry.replace(/,,/g, ','));
             });
 
-            return result;
-        };
+            return result
+        }
 
 
 
         // "COL=interaction,T=string,K=0=binds,V=0=#3300FF,K=1=isa,V=1=#FF0000"
         // "COL=interaction,T=string,K=0=binds,V=0=NONE,K=1=isa,V=1=ARROW"
         // "COL=weight,T=double,L=0=1.0,E=0=1.0,G=0=1.0,OV=0=0.0,L=1=8.0,E=1=8.0,G=1=1.0,OV=1=70.0"
+        var commaDelimitedListStringToStringList2 = this.commaDelimitedListStringToStringList2
         this.parseMappingDefinition = function (definition) {
-            var items = commaDelimitedListStringToStringList2(definition); //definition.split(',');
-            items = items || [];
-            var mapping = {};
-            var def = { m: mapping };
+            var items = commaDelimitedListStringToStringList2(definition) //definition.split(',');
+            items = items || []
+            var mapping = {}
+            var def = { m: mapping }
 
             /*
             _.forEach(items, function (item) {
@@ -625,12 +624,12 @@ exports.cxToJs = class CxToJs {
 
 
             _.forEach(items, function (item) {
-                item = item.trim();
+                item = item.trim()
 
-                var vals = item.split('=');
+                var vals = item.split('=')
 
-                var v0 = vals[0];
-                var v1 = vals[1];
+                var v0 = vals[0]
+                var v1 = vals[1]
 
                 if (vals.length > 2) {
 
@@ -654,25 +653,25 @@ exports.cxToJs = class CxToJs {
                      *                    V = "#CC0099"
                      */
 
-                    vals = item.match(/^((K|V|L|E|G|OV)=([0-9]+))=(.*)$/);
+                    vals = item.match(/^((K|V|L|E|G|OV)=([0-9]+))=(.*)$/)
 
-                    v0 = vals[2];
-                    v1 = vals[3];
+                    v0 = vals[2]
+                    v1 = vals[3]
 
-                    var v2 = vals[4];
-                    var m = mapping[v1];
+                    var v2 = vals[4]
+                    var m = mapping[v1]
                     if (!m) {
-                        m = {};
-                        mapping[v1] = m;
+                        m = {}
+                        mapping[v1] = m
                     }
-                    m[v0] = v2;
+                    m[v0] = v2
                 } else {
-                    def[v0] = v1;
+                    def[v0] = v1
                 }
-            });
+            })
 
-            return def;
-        };
+            return def
+        }
 
         /*
          * This function gets a string with 5 Cytoscape Node Label coordinates in the form
@@ -707,122 +706,126 @@ exports.cxToJs = class CxToJs {
             };
 
             if (!cyLabelCoordinates) {
-                return position;
+                return position
             }
 
-            var cyLabelCoordinatesArray = cyLabelCoordinates.split(',');
+            var cyLabelCoordinatesArray = cyLabelCoordinates.split(',')
 
             if (cyLabelCoordinatesArray.length >= 2) {
 
-                var nodeAnchorCoordinate = cyLabelCoordinatesArray[0];
-                var labelAnchorCoordinate = cyLabelCoordinatesArray[1];
+                var nodeAnchorCoordinate = cyLabelCoordinatesArray[0]
+                var labelAnchorCoordinate = cyLabelCoordinatesArray[1]
 
                 if (nodeAnchorCoordinate) {
-                    nodeAnchorCoordinate = nodeAnchorCoordinate.toUpperCase();
+                    nodeAnchorCoordinate = nodeAnchorCoordinate.toUpperCase()
                 }
                 if (labelAnchorCoordinate) {
-                    labelAnchorCoordinate = labelAnchorCoordinate.toUpperCase();
+                    labelAnchorCoordinate = labelAnchorCoordinate.toUpperCase()
                 }
                 if (!(nodeAnchorCoordinate in VALID_NODE_LABEL_POSITIONS)) {
-                    nodeAnchorCoordinate = 'C';
+                    nodeAnchorCoordinate = 'C'
                 }
                 if (!(labelAnchorCoordinate in VALID_NODE_LABEL_POSITIONS)) {
-                    labelAnchorCoordinate = 'C';
+                    labelAnchorCoordinate = 'C'
                 }
 
                 position =
                     CYTOSCAPE_TO_JS_NODE_LABEL_COORDINATES[nodeAnchorCoordinate][labelAnchorCoordinate];
             }
 
-            return position;
-        };
+            return position
+        }
 
         this.getCyVisualAttributeForVP = function (vp) {
-            var attProps = visualPropertyMap[vp];
+            var attProps = visualPropertyMap[vp]
             if (attProps) {
-                return attProps.att;
+                return attProps.att
             }
-            return false;
-        };
+            return false
+        }
 
         this.getCyVisualAttributeObjForVP = function (vp) {
-            var attProps = visualPropertyMap[vp];
+            var attProps = visualPropertyMap[vp]
             if (attProps) {
-                return attProps;
+                return attProps
             }
-            return false;
-        };
+            return false
+        }
 
         this.getCyVisualAttributeTypeForVp = function (vp) {
-            var attProps = visualPropertyMap[vp];
-            return attProps.type;
-        };
+            var attProps = visualPropertyMap[vp]
+            return attProps.type
+        }
 
+        var cyNumberFromString = this.cyNumberFromString
+        var cyColorFromCX = this.cyColorFromCX
+        var cyOpacityFromCX = this.cyOpacityFromCX
         this.getCyVisualAttributeValue = function (visualAttributeValue, cyVisualAttributeType) {
             if (cyVisualAttributeType === 'number') {
-                return cyNumberFromString(visualAttributeValue);
+                return cyNumberFromString(visualAttributeValue)
             } else if (cyVisualAttributeType === 'color') {
-                return cyColorFromCX(visualAttributeValue);
+                return cyColorFromCX(visualAttributeValue)
             } else if (cyVisualAttributeType === 'opacity') {
-                return cyOpacityFromCX(visualAttributeValue);
+                return cyOpacityFromCX(visualAttributeValue)
             } else if (cyVisualAttributeType === 'nodeShape') {
-                var shapeValue = NODE_SHAPE_MAP[visualAttributeValue];
+                var shapeValue = NODE_SHAPE_MAP[visualAttributeValue]
                 if (shapeValue) {
-                    return shapeValue;
+                    return shapeValue
                 }
             } else if (cyVisualAttributeType === 'arrow') {
                 //console.log(visualAttributeValue);
-                var arrowValue = ARROW_SHAPE_MAP[visualAttributeValue];
+                var arrowValue = ARROW_SHAPE_MAP[visualAttributeValue]
                 if (arrowValue) {
-                    return arrowValue;
+                    return arrowValue
                 }
             } else if (cyVisualAttributeType === 'line') {
-                var lineValue = LINE_STYLE_MAP[visualAttributeValue];
+                var lineValue = LINE_STYLE_MAP[visualAttributeValue]
                 if (lineValue) {
-                    return lineValue;
+                    return lineValue
                 }
             } else if (cyVisualAttributeType === 'fontFamily') {
 
-                var fontFamilyValue = visualAttributeValue.split(',').shift();
+                var fontFamilyValue = visualAttributeValue.split(',').shift()
 
-                var fontFamilyValueMapped = FONT_FAMILY_MAP[fontFamilyValue];
+                var fontFamilyValueMapped = FONT_FAMILY_MAP[fontFamilyValue]
 
-                return (fontFamilyValueMapped) ? fontFamilyValueMapped : fontFamilyValue;
+                return (fontFamilyValueMapped) ? fontFamilyValueMapped : fontFamilyValue
 
             } else if (cyVisualAttributeType === 'labelPosition') {
 
-                return getNodeLabelPosition(visualAttributeValue);
+                return this.getNodeLabelPosition(visualAttributeValue)
             }
             // assume string
-            return visualAttributeValue;
-        };
-
+            return visualAttributeValue
+        }
+        
+        //var getCyVisualAttributeForVP = self.getCyVisualAttributeForVP
         this.discreteMappingStyle = function (elementType, vp, def, attributeNameMap) {
             //console.log(def);
             // def is the discreteMappingStyle definition
-            var elements = [];
-            var cyVisualAttribute = getCyVisualAttributeForVP(vp);
+            var elements = []
+            var cyVisualAttribute = self.getCyVisualAttributeForVP(vp)
             if (!cyVisualAttribute) {
-                console.log('no visual attribute for ' + vp);
-                return elements;  // empty result, vp not handled
+                //console.log('no visual attribute for ' + vp)
+                return elements  // empty result, vp not handled
             }
 
             //console.log("visual attribute for " + vp + ' = ' + cyVisualAttribute);
 
-            var cyVisualAttributeType = getCyVisualAttributeTypeForVp(vp);
+            var cyVisualAttributeType = self.getCyVisualAttributeTypeForVp(vp)
 
             // the cytoscape column is mapped to the cyjs attribute name
-            var cyDataAttribute = getCyAttributeName(def.COL, attributeNameMap);
+            var cyDataAttribute = self.getCyAttributeName(def.COL, attributeNameMap)
 
-            var colDataType = def.T;
+            var colDataType = def.T
 
             //    var regExToCheckIfIntNumber   = /^-{0,1}\d+$/;
             //    var regExToCheckIfFloatNumber = /^-{0,1}\d+\.\d*$/;
 
             _.forEach(def.m, function (pair) {
-                var cyDataAttributeValue = pair.K;
-                var visualAttributeValue = pair.V;
-                var cyVisualAttributeValue = getCyVisualAttributeValue(visualAttributeValue, cyVisualAttributeType);
+                var cyDataAttributeValue = pair.K
+                var visualAttributeValue = pair.V
+                var cyVisualAttributeValue = self.getCyVisualAttributeValue(visualAttributeValue, cyVisualAttributeType)
 
                 // check if cyDataAttributeValue is a valid number (float or integer)
                 //      var isValidNumber =
@@ -831,11 +834,11 @@ exports.cxToJs = class CxToJs {
 
                 var cySelector = colDataType !== 'string' && colDataType !== 'boolean' ?
                     elementType + '[' + cyDataAttribute + ' = ' + cyDataAttributeValue + ']' :
-                    elementType + '[' + cyDataAttribute + ' = \'' + cyDataAttributeValue + '\']';
+                    elementType + '[' + cyDataAttribute + ' = \'' + cyDataAttributeValue + '\']'
 
-                var cyVisualAttributePair = {};
+                var cyVisualAttributePair = {}
                 if (cyVisualAttribute !== 'labelPosition') {
-                    cyVisualAttributePair[cyVisualAttribute] = cyVisualAttributeValue;
+                    cyVisualAttributePair[cyVisualAttribute] = self.cyVisualAttributeValue
                 } else {
                     // cyVisualAttribute is 'labelPosition'
                     cyVisualAttributePair['text-halign'] = cyVisualAttributeValue['text-halign'];
@@ -843,10 +846,10 @@ exports.cxToJs = class CxToJs {
                 }
                 var element = { 'selector': cySelector, 'css': cyVisualAttributePair };
                 //   console.log(element);
-                elements.push(element);
-            });
-            return elements;
-        };
+                elements.push(element)
+            })
+            return elements
+        }
 
         this.continuousMappingStyleAux = function (cyVisualAttribute, cyVisualAttributeType, elementType, def, cyDataAttribute, elements) {
             var lastPointIndex = Object.keys(def.m).length - 1;
@@ -857,50 +860,50 @@ exports.cxToJs = class CxToJs {
             // G - Greater Visual Attribute Value
             // OV - Mapped Data Value
 
-            var previousTranslatedPoint = null;
+            var previousTranslatedPoint = null
 
             //            console.log('m =' + JSON.stringify(def.m) );
 
             _.forEach(def.m, function (point, index) {
 
                 var translatedPoint = {
-                    lesserValue: getCyVisualAttributeValue(point.L, cyVisualAttributeType),
-                    equalValue: getCyVisualAttributeValue(point.E, cyVisualAttributeType),
-                    greaterValue: getCyVisualAttributeValue(point.G, cyVisualAttributeType),
+                    lesserValue: self.getCyVisualAttributeValue(point.L, cyVisualAttributeType),
+                    equalValue: self.getCyVisualAttributeValue(point.E, cyVisualAttributeType),
+                    greaterValue: self.getCyVisualAttributeValue(point.G, cyVisualAttributeType),
                     mappedDataValue: cyNumberFromString(point.OV)
-                };
+                }
 
-                var lesserSelector = null;
-                var lesserCSS = {};
+                var lesserSelector = null
+                var lesserCSS = {}
 
-                var equalSelector = null;
-                var equalCSS = {};
+                var equalSelector = null
+                var equalCSS = {}
 
-                var middleSelector = null;
-                var middleCSS = {};
+                var middleSelector = null
+                var middleCSS = {}
 
-                var greaterSelector = null;
-                var greaterCSS = {};
+                var greaterSelector = null
+                var greaterCSS = {}
 
                 //                console.log('tp = ' + JSON.stringify(translatedPoint));
                 //                console.log('ptp = ' + JSON.stringify(previousTranslatedPoint));
 
-                var i = parseInt(index);
+                var i = parseInt(index)
 
                 if (i === 0) {
                     // first Continuous Mapping point in sequence
                     // output a style for values less than the point
                     lesserSelector = elementType + '[' + cyDataAttribute + ' < ' + translatedPoint.mappedDataValue + ']';
-                    lesserCSS[cyVisualAttribute] = translatedPoint.lesserValue;
+                    lesserCSS[cyVisualAttribute] = translatedPoint.lesserValue
                     elements.push({ 'selector': lesserSelector, 'css': lesserCSS });
 
                     // output a style for values equal to the point
                     equalSelector = elementType + '[' + cyDataAttribute + ' = ' + translatedPoint.mappedDataValue + ']';
-                    equalCSS[cyVisualAttribute] = translatedPoint.equalValue;
+                    equalCSS[cyVisualAttribute] = translatedPoint.equalValue
                     elements.push({ 'selector': equalSelector, 'css': equalCSS });
 
                     // set the previous point values to use when processing the next point
-                    previousTranslatedPoint = translatedPoint;
+                    previousTranslatedPoint = translatedPoint
 
                 } else {
                     // intermediate or final Continuous Mapping point in sequence
@@ -949,57 +952,61 @@ exports.cxToJs = class CxToJs {
 
 
         this.continuousMappingStyle = function (elementType, vp, def, attributeNameMap) {
-            var elements = [];
-            var cyVisualAttributeObj = getCyVisualAttributeObjForVP(vp); //getCyVisualAttributeForVP(vp);
+            var elements = []
+            var cyVisualAttributeObj = self.getCyVisualAttributeObjForVP(vp); //getCyVisualAttributeForVP(vp);
             if (!cyVisualAttributeObj) {
-                console.log('no visual attribute for ' + vp);
-                return elements;  // empty result, vp not handled
+                //console.log('no visual attribute for ' + vp)
+                return elements  // empty result, vp not handled
             }
-            var ll = Object.prototype.toString.call(cyVisualAttributeObj);
+            var ll = Object.prototype.toString.call(cyVisualAttributeObj)
             if (ll !== '[object Array]') {
-                cyVisualAttributeObj = [cyVisualAttributeObj];
+                cyVisualAttributeObj = [cyVisualAttributeObj]
             }
 
-            var cyDataAttribute = getCyAttributeName(def.COL, attributeNameMap);
+            var cyDataAttribute = self.getCyAttributeName(def.COL, attributeNameMap)
 
             _.forEach(cyVisualAttributeObj, function (vAttr) {
-                var cyVisualAttribute = vAttr.att;
-                var cyVisualAttributeType = vAttr.type;
-                continuousMappingStyleAux(cyVisualAttribute, cyVisualAttributeType, elementType, def, cyDataAttribute, elements);
+                var cyVisualAttribute = vAttr.att
+                var cyVisualAttributeType = vAttr.type
+                self.continuousMappingStyleAux(cyVisualAttribute, cyVisualAttributeType, elementType, def, cyDataAttribute, elements);
 
-            });
+            })
 
-            return elements;
-        };
+            return elements
+        }
 
         this.passthroughMappingStyle = function (elementType, vp, def, attributeNameMap) {
-            var elements = [];
-            var cyVisualAttribute = getCyVisualAttributeForVP(vp);
+            var elements = []
+            var cyVisualAttribute = self.getCyVisualAttributeForVP(vp)
             if (!cyVisualAttribute) {
-                console.log('no visual attribute for ' + vp);
-                return elements;  // empty result, vp not handled
+                //console.log('no visual attribute for ' + vp)
+                return elements  // empty result, vp not handled
             }
 
             // the cytoscape column is mapped to the cyjs attribute name
-            var cyDataAttribute = getCyAttributeName(def.COL, attributeNameMap);
+            var cyDataAttribute = self.getCyAttributeName(def.COL, attributeNameMap)
 
-            var properties = {};
-            properties[cyVisualAttribute] = 'data(' + cyDataAttribute + ')';
+            var properties = {}
+            properties[cyVisualAttribute] = 'data(' + cyDataAttribute + ')'
             var style = { 'selector': elementType + '[' + cyDataAttribute + ']', 'css': properties };
-            elements.push(style);
-            return elements;
-        };
+            elements.push(style)
+            return elements
+        }
 
+        //var parseMappingDefinition = this.parseMappingDefinition
+        // var discreteMappingStyle = this.discreteMappingStyle
+        // var continuousMappingStyle = this.continuousMappingStyle
+        // var passthroughMappingStyle = this.passthroughMappingStyle
         this.mappingStyle = function (elementType, vp, type, definition, attributeNameMap) {
-            var def = parseMappingDefinition(definition);
+            var def = self.parseMappingDefinition(definition)
             if (type === 'DISCRETE') {
-                return discreteMappingStyle(elementType, vp, def, attributeNameMap);
+                return self.discreteMappingStyle(elementType, vp, def, attributeNameMap);
             } else if (type === 'CONTINUOUS') {
-                return continuousMappingStyle(elementType, vp, def, attributeNameMap);
+                return self.continuousMappingStyle(elementType, vp, def, attributeNameMap);
             } else if (type === 'PASSTHROUGH') {
-                return passthroughMappingStyle(elementType, vp, def, attributeNameMap);
+                return self.passthroughMappingStyle(elementType, vp, def, attributeNameMap);
             }
-        };
+        }
     }
 
 
@@ -1038,8 +1045,8 @@ exports.cxToJs = class CxToJs {
             _.forEach(cxNodeAttributes, function (nodeAttributeMap) {
                 _.forEach(nodeAttributeMap, function (attributeObject, attributeName) {
                     getCyAttributeName(attributeName, attributeNameMap);
-                });
-            });
+                })
+            })
         }
 
         //            sanitizeAttributeNameMap(attributeNameMap);
@@ -1270,48 +1277,52 @@ exports.cxToJs = class CxToJs {
     cyStyleFromNiceCX(niceCX, attributeNameMap) {
         //console.log('style from niceCX: ' + Object.keys(niceCX).length);
 
-        var nodeDefaultStyles = [];
-        var nodeDefaultMappings = [];
-        var nodeSpecificStyles = [];
-        var edgeDefaultStyles = [];
-        var edgeDefaultMappings = [];
-        var edgeSpecificStyles = [];
-        var nodeSelectedStyles = [];
-        var edgeSelectedStyles = [];
+        var nodeDefaultStyles = []
+        var nodeDefaultMappings = []
+        var nodeSpecificStyles = []
+        var edgeDefaultStyles = []
+        var edgeDefaultMappings = []
+        var edgeSpecificStyles = []
+        var nodeSelectedStyles = []
+        var edgeSelectedStyles = []
 
 
-        var visualProperties;
+        var visualProperties
         if (niceCX.cyVisualProperties) {
-            visualProperties = niceCX.cyVisualProperties;
+            visualProperties = niceCX.cyVisualProperties
         } else if (niceCX.visualProperties) {
-            visualProperties = niceCX.visualProperties;
+            visualProperties = niceCX.visualProperties
         } else {
             return DEF_VISUAL_STYLE;
         }
 
         // TODO handle cases with multiple views
 
-
+        var getCyVisualAttributeForVP = this.getCyVisualAttributeForVP
+        var getCyVisualAttributeTypeForVp = this.getCyVisualAttributeTypeForVp
+        var getCyVisualAttributeValue = this.getCyVisualAttributeValue
+        var getNodeLabelPosition = this.getNodeLabelPosition
+        var mappingStyle = this.mappingStyle
         _.forEach(visualProperties, function (vpAspectElement) {
             _.forEach(vpAspectElement, function (vpElement) {
                 //console.log(vpElement);
-                var elementType = vpElement.properties_of;
+                var elementType = vpElement.properties_of
                 if (elementType === 'nodes:default') {
 
-                    var cyLabelPositionCoordinates = null;
-                    var nodeLabelFontFace = null;
-                    var defaultNodeProperties = {};
-                    var nodeSize = null;
+                    var cyLabelPositionCoordinates = null
+                    var nodeLabelFontFace = null
+                    var defaultNodeProperties = {}
+                    var nodeSize = null
 
                     _.forEach(vpElement.properties, function (value, vp) {
-                        console.log('default node property ' + vp + ' = ' + value);
-                        var cyVisualAttribute = getCyVisualAttributeForVP(vp);
+                        //console.log('default node property ' + vp + ' = ' + value);
+                        var cyVisualAttribute = getCyVisualAttributeForVP(vp)
                         if (cyVisualAttribute) {
                             if (vp === 'NODE_LABEL_POSITION') {
-                                cyLabelPositionCoordinates = value;
+                                cyLabelPositionCoordinates = value
 
                             } else {
-                                var cyVisualAttributeType = getCyVisualAttributeTypeForVp(vp);
+                                var cyVisualAttributeType = getCyVisualAttributeTypeForVp(vp)
                                 defaultNodeProperties[cyVisualAttribute] = getCyVisualAttributeValue(value, cyVisualAttributeType);
                             }
                         } else {
@@ -1331,31 +1342,31 @@ exports.cxToJs = class CxToJs {
                             } else if (vp === 'NODE_CUSTOMGRAPHICS_1') {
 
                                 if (value && !value.startsWith('org.cytoscape.PieChart')) {
-                                    return; // continue the loop
+                                    return // continue the loop
                                 }
-                                var pieChartStr = value.match(/{.*}/);
+                                var pieChartStr = value.match(/{.*}/)
 
                                 if (!pieChartStr) {
-                                    return; // continue the loop
+                                    return // continue the loop
                                 }
-                                var pieChartObj = JSON.parse(pieChartStr[0]);
+                                var pieChartObj = JSON.parse(pieChartStr[0])
 
                                 /** @namespace pieChartObj.cy_colors **/
                                 if (pieChartObj && pieChartObj.cy_colors && Array.isArray(pieChartObj.cy_colors)) {
-                                    var i = 1;
+                                    var i = 1
 
                                     _.forEach(pieChartObj.cy_colors, function (color) {
                                         var pieSliceColor = 'pie-' + i + '-background-color';
 
                                         defaultNodeProperties[pieSliceColor] = color;
-                                        i++;
-                                    });
+                                        i++
+                                    })
                                 }
 
                                 /** @namespace pieChartObj.cy_dataColumns **/
                                 if (pieChartObj && pieChartObj.cy_dataColumns && Array.isArray(pieChartObj.cy_dataColumns)) {
 
-                                    var j = 1;
+                                    var j = 1
 
                                     var normalizedNames = attributeNameMap;
                                     var pieColumns = {};
@@ -1400,8 +1411,8 @@ exports.cxToJs = class CxToJs {
 
                     /** @namespace vpElement.dependencies.nodeSizeLocked **/
                     if (nodeSize && vpElement.dependencies.nodeSizeLocked && vpElement.dependencies.nodeSizeLocked === 'true') {
-                        defaultNodeProperties.height = nodeSize;
-                        defaultNodeProperties.width = nodeSize;
+                        defaultNodeProperties.height = nodeSize
+                        defaultNodeProperties.width = nodeSize
                     }
 
                     var nodeLabelPosition = getNodeLabelPosition(cyLabelPositionCoordinates);
@@ -1417,8 +1428,8 @@ exports.cxToJs = class CxToJs {
                         defaultNodeProperties['font-family'] = 'sans-serif';
                         defaultNodeProperties['font-weight'] = 'normal';
                     }
-                    var defaultNodeStyle = { 'selector': 'node', 'css': defaultNodeProperties };
-                    nodeDefaultStyles.push(defaultNodeStyle);
+                    var defaultNodeStyle = { 'selector': 'node', 'css': defaultNodeProperties }
+                    nodeDefaultStyles.push(defaultNodeStyle)
 
                     _.forEach(vpElement.mappings, function (mapping, vp) {
                         //console.log(mapping);
@@ -1429,11 +1440,11 @@ exports.cxToJs = class CxToJs {
                             !(vp === 'NODE_SIZE' && (!vpElement.dependencies.nodeSizeLocked || (vpElement.dependencies.nodeSizeLocked && vpElement.dependencies.nodeSizeLocked === 'false')))
                         ) {
 
-                            elementType = 'node';
+                            elementType = 'node'
                             var styles = mappingStyle(elementType, vp, mapping.type, mapping.definition, attributeNameMap);
                             nodeDefaultMappings = nodeDefaultMappings.concat(styles);
                         }
-                    });
+                    })
 
                 } else if (elementType === 'edges:default') {
 
