@@ -74,9 +74,9 @@ const DEF_VISUAL_STYLE = [
             'width': 6
         }
     }
-];
+]
 
-const CX_NUMBER_DATATYPES = ['byte', 'double', 'float', 'integer', 'long', 'short'];
+const CX_NUMBER_DATATYPES = ['byte', 'double', 'float', 'integer', 'long', 'short']
 
 const CX_LIST_DATATYPES =
     ['list_of_string', 'list_of_boolean',
@@ -95,7 +95,7 @@ const NODE_SHAPE_MAP = {
     'ROUND_RECTANGLE': 'roundrectangle',
     'TRIANGLE': 'triangle',
     'VEE': 'vee'
-};
+}
 
 // there are 22 arrow shapes in Cytoscape 3.6.1 and 10 arrow shapes in Cytoscape.js 3.2.9
 const ARROW_SHAPE_MAP = {
@@ -121,7 +121,7 @@ const ARROW_SHAPE_MAP = {
     'OPEN_SQUARE': 'square',
     'SQUARE': 'square',
     'T': 'tee'
-};
+}
 
 // there are 16 line styles in Cytoscape 3.6.1 and 3 line styles in Cytoscape.js 3.2.9
 const LINE_STYLE_MAP = {
@@ -141,7 +141,7 @@ const LINE_STYLE_MAP = {
     'SOLID': 'solid',
     'VERTICAL_SLASH': 'dashed',
     'ZIGZAG': 'solid'
-};
+}
 
 const VALID_NODE_LABEL_POSITIONS = {
     'NW': 0,
@@ -157,7 +157,7 @@ const VALID_NODE_LABEL_POSITIONS = {
     'SE': 8,
 
     'NONE': 9
-};
+}
 
 /*
  * Shall we replace
@@ -320,7 +320,7 @@ const CYTOSCAPE_TO_JS_NODE_LABEL_COORDINATES = {
 
         'W': { 'text-halign': 'center', 'text-valign': 'center' }   // 100
     }
-};
+}
 
 const visualPropertyMap = {
 
@@ -356,7 +356,7 @@ const visualPropertyMap = {
     'EDGE_TARGET_ARROW_SHAPE': { 'att': 'target-arrow-shape', 'type': 'arrow' },
     'EDGE_TARGET_ARROW_UNSELECTED_PAINT': { 'att': 'target-arrow-color', 'type': 'color' },
     'EDGE_SOURCE_ARROW_UNSELECTED_PAINT': { 'att': 'source-arrow-color', 'type': 'color' }
-};
+}
 
 // https://www.cssfontstack.com/
 const FONT_FAMILY_MAP = {
@@ -425,7 +425,7 @@ const FONT_FAMILY_MAP = {
 
     // Script font stack
     'BrushScriptMT': 'Brush Script MT,cursive'
-};
+}
 
 exports.cxToJs = class CxToJs {
 
@@ -453,7 +453,7 @@ exports.cxToJs = class CxToJs {
             var cyAttributeName = attributeNameMap[attributeName];
 
             if (!cyAttributeName) {
-                cyAttributeName = self.specialCaseAttributeMap[attributeName];
+                cyAttributeName = self.specialCaseAttributeMap[attributeName]
                 if (cyAttributeName) {
                     return cyAttributeName
                 }
@@ -573,18 +573,18 @@ exports.cxToJs = class CxToJs {
             //var mapping = {};
             //var def = {m: mapping};
 
-            var result = [];
+            var result = []
 
             //var objs = list.match(/(?<=(^|,))([^,]|,,)*(?=(,|$))/g);
 
-            var objs = list.match(/(^|,)([^,]|,,)*/g);
+            var objs = list.match(/(^|,)([^,]|,,)*/g)
 
             objs.forEach(function (entry) {
                 if (entry.startsWith(',')) {
-                    entry = entry.replace(',', '');
+                    entry = entry.replace(',', '')
                 }
-                result.push(entry.replace(/,,/g, ','));
-            });
+                result.push(entry.replace(/,,/g, ','))
+            })
 
             return result
         }
@@ -841,10 +841,10 @@ exports.cxToJs = class CxToJs {
                     cyVisualAttributePair[cyVisualAttribute] = self.cyVisualAttributeValue
                 } else {
                     // cyVisualAttribute is 'labelPosition'
-                    cyVisualAttributePair['text-halign'] = cyVisualAttributeValue['text-halign'];
-                    cyVisualAttributePair['text-valign'] = cyVisualAttributeValue['text-valign'];
+                    cyVisualAttributePair['text-halign'] = cyVisualAttributeValue['text-halign']
+                    cyVisualAttributePair['text-valign'] = cyVisualAttributeValue['text-valign']
                 }
-                var element = { 'selector': cySelector, 'css': cyVisualAttributePair };
+                var element = { 'selector': cySelector, 'css': cyVisualAttributePair }
                 //   console.log(element);
                 elements.push(element)
             })
@@ -944,16 +944,16 @@ exports.cxToJs = class CxToJs {
                     }
 
                     // set the previous point to this point for the next iteration
-                    previousTranslatedPoint = translatedPoint;
+                    previousTranslatedPoint = translatedPoint
                 }
-            });
+            })
 
-        };
+        }
 
 
         this.continuousMappingStyle = function (elementType, vp, def, attributeNameMap) {
             var elements = []
-            var cyVisualAttributeObj = self.getCyVisualAttributeObjForVP(vp); //getCyVisualAttributeForVP(vp);
+            var cyVisualAttributeObj = self.getCyVisualAttributeObjForVP(vp) //getCyVisualAttributeForVP(vp);
             if (!cyVisualAttributeObj) {
                 //console.log('no visual attribute for ' + vp)
                 return elements  // empty result, vp not handled
@@ -1023,8 +1023,8 @@ exports.cxToJs = class CxToJs {
     //const DEF_NO_LAYOUT = 'cose';
 
     getDefaultStyle() {
-        return DEF_VISUAL_STYLE;
-    };
+        return DEF_VISUAL_STYLE
+    }
 
     cyElementsFromNiceCX(niceCX, attributeNameMap) {
 
@@ -1670,7 +1670,7 @@ exports.cxToJs = class CxToJs {
 exports.testCxToJS = () => {
     var cxutils = new cyNetworkUtils()
     var cx2js = cx2js(cxutils)
-    var fs = require("fs")
+    
     console.log("\n *START* \n")
     var content = fs.readFileSync("small_graph.cx")
     var rawCX = JSON.parse(content)
