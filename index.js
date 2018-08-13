@@ -1,29 +1,3 @@
-exports.getCX = () => {
-
-    var elements = {
-        elements: [
-            { data: { id: 'a' } },
-            { data: { id: 'b' } },
-            {
-                data: {
-                    id: 'ab',
-                    source: 'a',
-                    target: 'b'
-                }
-            }]
-    }
-    return elements
-}
-
-exports.sayHello = (name) => {
-    console.log(buildSentence(name))
-}
-
-var buildSentence = function (name) {
-    return 'Hello ' + name + '!'
-}
-
-
 var _ = require('lodash')
 
 const DEF_VISUAL_STYLE = [
@@ -81,7 +55,7 @@ const CX_NUMBER_DATATYPES = ['byte', 'double', 'float', 'integer', 'long', 'shor
 const CX_LIST_DATATYPES =
     ['list_of_string', 'list_of_boolean',
         'list_of_byte', 'list_of_char', 'list_of_double', 'list_of_float', 'list_of_integer',
-        'list_of_long', 'list_of_short'];
+        'list_of_long', 'list_of_short']
 
 // there are 9 types of Node Shapes in Cytoscape 3.6.1 and 18 types of Node Shapes in Cytoscape.js 3.2.9;
 // all Node Shapes of Cytoscape 3.6.1 map nicely to Node Body Shapes of Cytoscape.js 3.2.9.
@@ -429,8 +403,6 @@ const FONT_FAMILY_MAP = {
 
 exports.cxToJs = class CxToJs {
 
-
-
     constructor(cxNetworkUtils) {
         this.cxNetworkUtils = cxNetworkUtils
 
@@ -450,7 +422,7 @@ exports.cxToJs = class CxToJs {
 
         this.getCyAttributeName = function (attributeName, attributeNameMap) {
 
-            var cyAttributeName = attributeNameMap[attributeName];
+            var cyAttributeName = attributeNameMap[attributeName]
 
             if (!cyAttributeName) {
                 cyAttributeName = self.specialCaseAttributeMap[attributeName]
@@ -504,8 +476,8 @@ exports.cxToJs = class CxToJs {
          */
         this.getFirstElementFromList = function (attributeObj) {
 
-            var type = (attributeObj && attributeObj.d) ? attributeObj.d : 'list_of_string';
-            var attrValue = (attributeObj && attributeObj.v && attributeObj.v[0]) ? attributeObj.v[0] : '';
+            var type = (attributeObj && attributeObj.d) ? attributeObj.d : 'list_of_string'
+            var attrValue = (attributeObj && attributeObj.v && attributeObj.v[0]) ? attributeObj.v[0] : ''
             var retValue
 
             if (type === 'list_of_string' || type === 'list_of_boolean') {
@@ -519,7 +491,7 @@ exports.cxToJs = class CxToJs {
            */
             } else {
                 // this is a numeric type, one of CX_NUMBER_DATATYPES
-                retValue = parseFloat(attrValue);
+                retValue = parseFloat(attrValue)
             }
 
             return retValue
@@ -703,7 +675,7 @@ exports.cxToJs = class CxToJs {
             var position = {
                 'text-halign': 'center',
                 'text-valign': 'center'
-            };
+            }
 
             if (!cyLabelCoordinates) {
                 return position
@@ -730,7 +702,7 @@ exports.cxToJs = class CxToJs {
                 }
 
                 position =
-                    CYTOSCAPE_TO_JS_NODE_LABEL_COORDINATES[nodeAnchorCoordinate][labelAnchorCoordinate];
+                    CYTOSCAPE_TO_JS_NODE_LABEL_COORDINATES[nodeAnchorCoordinate][labelAnchorCoordinate]
             }
 
             return position
@@ -757,16 +729,16 @@ exports.cxToJs = class CxToJs {
             return attProps.type
         }
 
-        var cyNumberFromString = this.cyNumberFromString
-        var cyColorFromCX = this.cyColorFromCX
-        var cyOpacityFromCX = this.cyOpacityFromCX
+        //var cyNumberFromString = this.cyNumberFromString
+        //var cyColorFromCX = this.cyColorFromCX
+        // var cyOpacityFromCX = this.cyOpacityFromCX
         this.getCyVisualAttributeValue = function (visualAttributeValue, cyVisualAttributeType) {
             if (cyVisualAttributeType === 'number') {
-                return cyNumberFromString(visualAttributeValue)
+                return self.cyNumberFromString(visualAttributeValue)
             } else if (cyVisualAttributeType === 'color') {
-                return cyColorFromCX(visualAttributeValue)
+                return self.cyColorFromCX(visualAttributeValue)
             } else if (cyVisualAttributeType === 'opacity') {
-                return cyOpacityFromCX(visualAttributeValue)
+                return self.cyOpacityFromCX(visualAttributeValue)
             } else if (cyVisualAttributeType === 'nodeShape') {
                 var shapeValue = NODE_SHAPE_MAP[visualAttributeValue]
                 if (shapeValue) {
@@ -810,12 +782,14 @@ exports.cxToJs = class CxToJs {
                 return elements  // empty result, vp not handled
             }
 
-            //console.log("visual attribute for " + vp + ' = ' + cyVisualAttribute);
+           
 
             var cyVisualAttributeType = self.getCyVisualAttributeTypeForVp(vp)
 
             // the cytoscape column is mapped to the cyjs attribute name
             var cyDataAttribute = self.getCyAttributeName(def.COL, attributeNameMap)
+
+           
 
             var colDataType = def.T
 
@@ -826,7 +800,6 @@ exports.cxToJs = class CxToJs {
                 var cyDataAttributeValue = pair.K
                 var visualAttributeValue = pair.V
                 var cyVisualAttributeValue = self.getCyVisualAttributeValue(visualAttributeValue, cyVisualAttributeType)
-
                 // check if cyDataAttributeValue is a valid number (float or integer)
                 //      var isValidNumber =
                 //          regExToCheckIfIntNumber.test(cyDataAttributeValue) ||
@@ -838,21 +811,21 @@ exports.cxToJs = class CxToJs {
 
                 var cyVisualAttributePair = {}
                 if (cyVisualAttribute !== 'labelPosition') {
-                    cyVisualAttributePair[cyVisualAttribute] = self.cyVisualAttributeValue
+                    cyVisualAttributePair[cyVisualAttribute] = cyVisualAttributeValue
                 } else {
                     // cyVisualAttribute is 'labelPosition'
                     cyVisualAttributePair['text-halign'] = cyVisualAttributeValue['text-halign']
                     cyVisualAttributePair['text-valign'] = cyVisualAttributeValue['text-valign']
                 }
                 var element = { 'selector': cySelector, 'css': cyVisualAttributePair }
-                //   console.log(element);
+                //console.log(element);
                 elements.push(element)
             })
             return elements
         }
 
         this.continuousMappingStyleAux = function (cyVisualAttribute, cyVisualAttributeType, elementType, def, cyDataAttribute, elements) {
-            var lastPointIndex = Object.keys(def.m).length - 1;
+            var lastPointIndex = Object.keys(def.m).length - 1
 
             // Each Continuous Mapping Point in def.m has 4 entries:
             // L - Lesser Visual Attribute Value
@@ -870,7 +843,7 @@ exports.cxToJs = class CxToJs {
                     lesserValue: self.getCyVisualAttributeValue(point.L, cyVisualAttributeType),
                     equalValue: self.getCyVisualAttributeValue(point.E, cyVisualAttributeType),
                     greaterValue: self.getCyVisualAttributeValue(point.G, cyVisualAttributeType),
-                    mappedDataValue: cyNumberFromString(point.OV)
+                    mappedDataValue: self.cyNumberFromString(point.OV)
                 }
 
                 var lesserSelector = null
@@ -893,14 +866,14 @@ exports.cxToJs = class CxToJs {
                 if (i === 0) {
                     // first Continuous Mapping point in sequence
                     // output a style for values less than the point
-                    lesserSelector = elementType + '[' + cyDataAttribute + ' < ' + translatedPoint.mappedDataValue + ']';
+                    lesserSelector = elementType + '[' + cyDataAttribute + ' < ' + translatedPoint.mappedDataValue + ']'
                     lesserCSS[cyVisualAttribute] = translatedPoint.lesserValue
-                    elements.push({ 'selector': lesserSelector, 'css': lesserCSS });
+                    elements.push({ 'selector': lesserSelector, 'css': lesserCSS })
 
                     // output a style for values equal to the point
-                    equalSelector = elementType + '[' + cyDataAttribute + ' = ' + translatedPoint.mappedDataValue + ']';
+                    equalSelector = elementType + '[' + cyDataAttribute + ' = ' + translatedPoint.mappedDataValue + ']'
                     equalCSS[cyVisualAttribute] = translatedPoint.equalValue
-                    elements.push({ 'selector': equalSelector, 'css': equalCSS });
+                    elements.push({ 'selector': equalSelector, 'css': equalCSS })
 
                     // set the previous point values to use when processing the next point
                     previousTranslatedPoint = translatedPoint
@@ -909,7 +882,7 @@ exports.cxToJs = class CxToJs {
                     // intermediate or final Continuous Mapping point in sequence
                     // output a style for the range between the previous point and this point
                     // "selector": "edge[weight > 0][weight < 70]"
-                    middleSelector = elementType + '[' + cyDataAttribute + ' > ' + previousTranslatedPoint.mappedDataValue + ']' + '[' + cyDataAttribute + ' < ' + translatedPoint.mappedDataValue + ']';
+                    middleSelector = elementType + '[' + cyDataAttribute + ' > ' + previousTranslatedPoint.mappedDataValue + ']' + '[' + cyDataAttribute + ' < ' + translatedPoint.mappedDataValue + ']'
 
                     //"width": "mapData(weight,0,70,1.0,8.0)"
                     if (previousTranslatedPoint.equalValue === translatedPoint.equalValue) {
@@ -922,25 +895,25 @@ exports.cxToJs = class CxToJs {
                         // this is a workaround to resolve https://ndexbio.atlassian.net/browse/NWA-267
                         // Translation of continuous mapping style problems.
 
-                        middleCSS[cyVisualAttribute] = previousTranslatedPoint.equalValue;
+                        middleCSS[cyVisualAttribute] = previousTranslatedPoint.equalValue
                     } else {
                         middleCSS[cyVisualAttribute] = 'mapData(' + cyDataAttribute + ',' +
                             previousTranslatedPoint.mappedDataValue + ',' + translatedPoint.mappedDataValue + ',' +
-                            previousTranslatedPoint.equalValue + ',' + translatedPoint.equalValue + ')';
+                            previousTranslatedPoint.equalValue + ',' + translatedPoint.equalValue + ')'
                     }
-                    elements.push({ 'selector': middleSelector, 'css': middleCSS });
+                    elements.push({ 'selector': middleSelector, 'css': middleCSS })
 
                     // output a style for values equal to this point
-                    equalSelector = elementType + '[' + cyDataAttribute + ' = ' + translatedPoint.mappedDataValue + ']';
-                    equalCSS[cyVisualAttribute] = translatedPoint.equalValue;
-                    elements.push({ 'selector': equalSelector, 'css': equalCSS });
+                    equalSelector = elementType + '[' + cyDataAttribute + ' = ' + translatedPoint.mappedDataValue + ']'
+                    equalCSS[cyVisualAttribute] = translatedPoint.equalValue
+                    elements.push({ 'selector': equalSelector, 'css': equalCSS })
 
                     // if this is the last point, output a style for values greater than this point
                     if (i === lastPointIndex) {
 
-                        greaterSelector = elementType + '[' + cyDataAttribute + ' > ' + translatedPoint.mappedDataValue + ']';
-                        greaterCSS[cyVisualAttribute] = translatedPoint.equalValue;
-                        elements.push({ 'selector': greaterSelector, 'css': greaterCSS });
+                        greaterSelector = elementType + '[' + cyDataAttribute + ' > ' + translatedPoint.mappedDataValue + ']'
+                        greaterCSS[cyVisualAttribute] = translatedPoint.equalValue
+                        elements.push({ 'selector': greaterSelector, 'css': greaterCSS })
                     }
 
                     // set the previous point to this point for the next iteration
@@ -949,7 +922,6 @@ exports.cxToJs = class CxToJs {
             })
 
         }
-
 
         this.continuousMappingStyle = function (elementType, vp, def, attributeNameMap) {
             var elements = []
@@ -968,7 +940,7 @@ exports.cxToJs = class CxToJs {
             _.forEach(cyVisualAttributeObj, function (vAttr) {
                 var cyVisualAttribute = vAttr.att
                 var cyVisualAttributeType = vAttr.type
-                self.continuousMappingStyleAux(cyVisualAttribute, cyVisualAttributeType, elementType, def, cyDataAttribute, elements);
+                self.continuousMappingStyleAux(cyVisualAttribute, cyVisualAttributeType, elementType, def, cyDataAttribute, elements)
 
             })
 
@@ -988,7 +960,7 @@ exports.cxToJs = class CxToJs {
 
             var properties = {}
             properties[cyVisualAttribute] = 'data(' + cyDataAttribute + ')'
-            var style = { 'selector': elementType + '[' + cyDataAttribute + ']', 'css': properties };
+            var style = { 'selector': elementType + '[' + cyDataAttribute + ']', 'css': properties }
             elements.push(style)
             return elements
         }
@@ -1000,16 +972,14 @@ exports.cxToJs = class CxToJs {
         this.mappingStyle = function (elementType, vp, type, definition, attributeNameMap) {
             var def = self.parseMappingDefinition(definition)
             if (type === 'DISCRETE') {
-                return self.discreteMappingStyle(elementType, vp, def, attributeNameMap);
+                return self.discreteMappingStyle(elementType, vp, def, attributeNameMap)
             } else if (type === 'CONTINUOUS') {
-                return self.continuousMappingStyle(elementType, vp, def, attributeNameMap);
+                return self.continuousMappingStyle(elementType, vp, def, attributeNameMap)
             } else if (type === 'PASSTHROUGH') {
-                return self.passthroughMappingStyle(elementType, vp, def, attributeNameMap);
+                return self.passthroughMappingStyle(elementType, vp, def, attributeNameMap)
             }
         }
     }
-
-
 
     // Public API here: the factory object will be returned
 
@@ -1028,49 +998,49 @@ exports.cxToJs = class CxToJs {
 
     cyElementsFromNiceCX(niceCX, attributeNameMap) {
 
-        var elements = {};
+        var elements = {}
 
-        var nodeList = [];
-        var nodeMap = {};
-        var edgeList = [];
-        var edgeMap = {};
+        var nodeList = []
+        var nodeMap = {}
+        var edgeList = []
+        var edgeMap = {}
 
-        elements.nodes = nodeList;
-        elements.edges = edgeList;
+        elements.nodes = nodeList
+        elements.edges = edgeList
 
-        var cxNodeAttributes = this.cxNetworkUtils.getNodeAttributes(niceCX);
+        var cxNodeAttributes = this.cxNetworkUtils.getNodeAttributes(niceCX)
         var getCyAttributeName = this.getCyAttributeName
         if (cxNodeAttributes) {
             // for each node id
             _.forEach(cxNodeAttributes, function (nodeAttributeMap) {
                 _.forEach(nodeAttributeMap, function (attributeObject, attributeName) {
-                    getCyAttributeName(attributeName, attributeNameMap);
+                    getCyAttributeName(attributeName, attributeNameMap)
                 })
             })
         }
 
         //            sanitizeAttributeNameMap(attributeNameMap);
 
-        var edgeAttributes = this.cxNetworkUtils.getEdgeAttributes(niceCX);
+        var edgeAttributes = this.cxNetworkUtils.getEdgeAttributes(niceCX)
         if (edgeAttributes) {
             _.forEach(edgeAttributes, function (edgeAttributeMap) {
                 _.forEach(edgeAttributeMap, function (attributeObject, attributeName) {
-                    getCyAttributeName(attributeName, attributeNameMap);
-                });
-            });
+                    getCyAttributeName(attributeName, attributeNameMap)
+                })
+            })
         }
 
-        this.sanitizeAttributeNameMap(attributeNameMap);
+        this.sanitizeAttributeNameMap(attributeNameMap)
 
         // handle node aspect
-        var cxNodes = this.cxNetworkUtils.getNodes(niceCX);
+        var cxNodes = this.cxNetworkUtils.getNodes(niceCX)
         var cxNetworkUtils = this.cxNetworkUtils
         if (cxNodes) {
             _.forEach(cxNodes, function (nodeElement) {
-                var cxNodeId = nodeElement['@id'];
-                var nodeData = { 'id': cxNodeId };
+                var cxNodeId = nodeElement['@id']
+                var nodeData = { 'id': cxNodeId }
 
-                nodeData.name = cxNetworkUtils.getDefaultNodeLabel(niceCX, nodeElement);
+                nodeData.name = cxNetworkUtils.getDefaultNodeLabel(niceCX, nodeElement)
                 /*if (nodeElement.n) {
                     nodeData.name = nodeElement.n;
                 } else if (nodeElement.represents) {
@@ -1080,33 +1050,33 @@ exports.cxToJs = class CxToJs {
                     if ( functionTerm ) { nodeData.name = cxNetworkUtils.stringifyFunctionTerm(functionTerm); }
                 } */
 
-                nodeMap[cxNodeId] = { data: nodeData };
-            });
+                nodeMap[cxNodeId] = { data: nodeData }
+            })
         }
 
         // handle nodeAttributes aspect
         // Note that nodeAttributes elements are handled specially in niceCX as a map of maps!!
-        cxNodeAttributes = this.cxNetworkUtils.getNodeAttributes(niceCX);
+        cxNodeAttributes = this.cxNetworkUtils.getNodeAttributes(niceCX)
         var getFirstElementFromList = this.getFirstElementFromList
         if (cxNodeAttributes) {
             // for each node id
             _.forEach(cxNodeAttributes, function (nodeAttributeMap, nodeId) {
-                var node = nodeMap[nodeId];
+                var node = nodeMap[nodeId]
                 if (node) {
                     _.forEach(nodeAttributeMap, function (attributeObject, attributeName) {
-                        var cyAttributeName = getCyAttributeName(attributeName, attributeNameMap);
-                        var dataType = attributeObject.d;
+                        var cyAttributeName = getCyAttributeName(attributeName, attributeNameMap)
+                        var dataType = attributeObject.d
                         if (cyAttributeName === 'selected') {
                             if (attributeObject.v === 'true') {
-                                node.selected = true;
+                                node.selected = true
                             } else if (attributeObject.v === 'false') {
-                                node.selected = false;
+                                node.selected = false
                             }
                         } else if (dataType && _.includes(CX_NUMBER_DATATYPES, dataType.toLowerCase())) {
-                            node.data[cyAttributeName] = parseFloat(attributeObject.v);
+                            node.data[cyAttributeName] = parseFloat(attributeObject.v)
 
                         } else if (dataType && _.includes(CX_LIST_DATATYPES, dataType.toLowerCase())) {
-                            node.data[cyAttributeName] = getFirstElementFromList(attributeObject);
+                            node.data[cyAttributeName] = getFirstElementFromList(attributeObject)
 
                             /*  } else if (dataType && dataType === 'boolean') {
       
@@ -1125,60 +1095,60 @@ exports.cxToJs = class CxToJs {
 
                         } else {
                             // Default to String && boolean
-                            node.data[cyAttributeName] = attributeObject.v;
+                            node.data[cyAttributeName] = attributeObject.v
                         }
-                    });
+                    })
                 }
-            });
+            })
         }
 
         // handle cartesianCoordinates aspect
         if (niceCX.cartesianLayout) {
             _.forEach(niceCX.cartesianLayout.elements, function (element) {
-                var nodeId = element.node;
-                var node = nodeMap[nodeId];
+                var nodeId = element.node
+                var node = nodeMap[nodeId]
                 if (node) {
-                    node.position = { x: element.x, y: element.y };
+                    node.position = { x: element.x, y: element.y }
                 } else {
-                    console.log('no node for cartesian Node Id = ' + nodeId);
+                    //console.log('no node for cartesian Node Id = ' + nodeId)
                 }
-            });
+            })
         }
 
         // handle edge aspect
-        var cxEdges = this.cxNetworkUtils.getEdges(niceCX);
+        var cxEdges = this.cxNetworkUtils.getEdges(niceCX)
         if (cxEdges) {
             _.forEach(cxEdges, function (element) {
-                var cxEdgeId = element['@id'];
+                var cxEdgeId = element['@id']
                 var edgeData = {
                     id: 'e' + cxEdgeId,
                     source: element.s,
                     target: element.t
-                };
-
-                if (element.i) {
-                    edgeData.interaction = element.i;
                 }
 
-                edgeMap[cxEdgeId] = { data: edgeData };
-            });
+                if (element.i) {
+                    edgeData.interaction = element.i
+                }
+
+                edgeMap[cxEdgeId] = { data: edgeData }
+            })
         }
 
         // handle edgeAttributes aspect
         // Note that edgeAttributes is a map similar to nodeAttributes!!
-        edgeAttributes = this.cxNetworkUtils.getEdgeAttributes(niceCX);
+        edgeAttributes = this.cxNetworkUtils.getEdgeAttributes(niceCX)
         if (edgeAttributes) {
             _.forEach(edgeAttributes, function (edgeAttributeMap, edgeId) {
-                var edge = edgeMap[edgeId];
+                var edge = edgeMap[edgeId]
                 if (edge) {
                     _.forEach(edgeAttributeMap, function (attributeObject, attributeName) {
-                        var cyAttributeName = getCyAttributeName(attributeName, attributeNameMap);
-                        var dataType = attributeObject.d;
+                        var cyAttributeName = getCyAttributeName(attributeName, attributeNameMap)
+                        var dataType = attributeObject.d
                         if (dataType && _.includes(CX_NUMBER_DATATYPES, dataType.toLowerCase())) {
-                            edge.data[cyAttributeName] = parseFloat(attributeObject.v);
+                            edge.data[cyAttributeName] = parseFloat(attributeObject.v)
 
                         } else if (dataType && _.includes(CX_LIST_DATATYPES, dataType.toLowerCase())) {
-                            edge.data[cyAttributeName] = getFirstElementFromList(attributeObject);
+                            edge.data[cyAttributeName] = getFirstElementFromList(attributeObject)
 
                             /*      } else if (dataType && dataType === 'boolean') {
           
@@ -1197,24 +1167,24 @@ exports.cxToJs = class CxToJs {
 
                         } else {
                             // Default to String and boolean
-                            edge.data[cyAttributeName] = attributeObject.v;
+                            edge.data[cyAttributeName] = attributeObject.v
                         }
-                    });
+                    })
                 }
-            });
+            })
         }
 
         // output the nodeMap to the nodeList
         _.forEach(nodeMap, function (node) {
-            nodeList.push(node);
-        });
+            nodeList.push(node)
+        })
 
         // output the edgeMap to the edgeList
         _.forEach(edgeMap, function (edge) {
-            edgeList.push(edge);
-        });
+            edgeList.push(edge)
+        })
 
-        return elements;
+        return elements
 
         // #10 Need to Override ID if exists
         //​ *ID*​ has a special meaning in Cytoscape.js and if such attribute is available in CX, it should be replaced to something else.
@@ -1239,40 +1209,40 @@ exports.cxToJs = class CxToJs {
 
          If CX contains attribute names containing such characters, it breaks Cytoscape.js.  The converter find and replace all of them before converting the actual data.
          */
-    };
+    }
 
     // get the color from the network visual property and convert it to CSS format
     cyBackgroundColorFromNiceCX(niceCX) {
         //console.log(niceCX);
-        var result = null;
-        var visualProps;
+        var result = null
+        var visualProps
         /** @namespace niceCX.cyVisualProperties **/
         if (niceCX.cyVisualProperties) {
-            visualProps = niceCX.cyVisualProperties;
+            visualProps = niceCX.cyVisualProperties
         }
         else {
             /** @namespace niceCX.visualProperties **/
             if (niceCX.visualProperties) {
-                visualProps = niceCX.visualProperties;
+                visualProps = niceCX.visualProperties
             } else {
-                return null;
+                return null
             }
         }
 
         _.forEach(visualProps, function (vpAspectElement) {
             _.forEach(vpAspectElement, function (vpElement) {
                 /** @namespace vpElement.properties_of **/
-                var elementType = vpElement.properties_of;
+                var elementType = vpElement.properties_of
                 if (elementType === 'network') {
                     /** @namespace vpElement.properties.NETWORK_BACKGROUND_PAINT **/
-                    result = vpElement.properties.NETWORK_BACKGROUND_PAINT;
-                    return false;
+                    result = vpElement.properties.NETWORK_BACKGROUND_PAINT
+                    return false
                 }
-            });
-        });
+            })
+        })
 
-        return result;
-    };
+        return result
+    }
 
     cyStyleFromNiceCX(niceCX, attributeNameMap) {
         //console.log('style from niceCX: ' + Object.keys(niceCX).length);
@@ -1293,7 +1263,7 @@ exports.cxToJs = class CxToJs {
         } else if (niceCX.visualProperties) {
             visualProperties = niceCX.visualProperties
         } else {
-            return DEF_VISUAL_STYLE;
+            return DEF_VISUAL_STYLE
         }
 
         // TODO handle cases with multiple views
@@ -1323,21 +1293,21 @@ exports.cxToJs = class CxToJs {
 
                             } else {
                                 var cyVisualAttributeType = getCyVisualAttributeTypeForVp(vp)
-                                defaultNodeProperties[cyVisualAttribute] = getCyVisualAttributeValue(value, cyVisualAttributeType);
+                                defaultNodeProperties[cyVisualAttribute] = getCyVisualAttributeValue(value, cyVisualAttributeType)
                             }
                         } else {
                             if (vp === 'NODE_LABEL_FONT_FACE') {
-                                nodeLabelFontFace = value;
+                                nodeLabelFontFace = value
                             } else if (vp === 'NODE_SELECTED_PAINT') {
-                                var selectedColor = getCyVisualAttributeValue(value, 'color');
-                                nodeSelectedStyles.push({ 'selector': 'node:selected', 'css': { 'background-color': selectedColor } });
+                                var selectedColor = getCyVisualAttributeValue(value, 'color')
+                                nodeSelectedStyles.push({ 'selector': 'node:selected', 'css': { 'background-color': selectedColor } })
 
                             } else if (vp === 'NODE_SIZE') {
-                                nodeSize = value;
+                                nodeSize = value
 
                             } else if (vp === 'NODE_LABEL_WIDTH') {
-                                defaultNodeProperties['text-wrap'] = 'wrap';
-                                defaultNodeProperties['text-max-width'] = value;
+                                defaultNodeProperties['text-wrap'] = 'wrap'
+                                defaultNodeProperties['text-max-width'] = value
 
                             } else if (vp === 'NODE_CUSTOMGRAPHICS_1') {
 
@@ -1356,9 +1326,9 @@ exports.cxToJs = class CxToJs {
                                     var i = 1
 
                                     _.forEach(pieChartObj.cy_colors, function (color) {
-                                        var pieSliceColor = 'pie-' + i + '-background-color';
+                                        var pieSliceColor = 'pie-' + i + '-background-color'
 
-                                        defaultNodeProperties[pieSliceColor] = color;
+                                        defaultNodeProperties[pieSliceColor] = color
                                         i++
                                     })
                                 }
@@ -1368,46 +1338,46 @@ exports.cxToJs = class CxToJs {
 
                                     var j = 1
 
-                                    var normalizedNames = attributeNameMap;
-                                    var pieColumns = {};
+                                    var normalizedNames = attributeNameMap
+                                    var pieColumns = {}
 
                                     for (var l = 0; l < pieChartObj.cy_dataColumns.length; l++) {
-                                        pieColumns[pieChartObj.cy_dataColumns[l]] = l;
+                                        pieColumns[pieChartObj.cy_dataColumns[l]] = l
                                     }
 
                                     _.forEach(pieChartObj.cy_dataColumns, function (column) {
 
-                                        var pieSliceSize = 'pie-' + j + '-background-size';
+                                        var pieSliceSize = 'pie-' + j + '-background-size'
 
                                         defaultNodeProperties[pieSliceSize] = function (ele) {
-                                            var data = ele.json().data;
-                                            var totalSum = 0;
+                                            var data = ele.json().data
+                                            var totalSum = 0
 
-                                            var currentColumnValue = data[normalizedNames[column]];
+                                            var currentColumnValue = data[normalizedNames[column]]
                                             if ((typeof currentColumnValue === 'undefined') ||
                                                 (currentColumnValue === null) || (currentColumnValue <= 0)) {
-                                                return 0;
+                                                return 0
                                             }
 
                                             for (var key in pieColumns) {
-                                                var columnValue = data[normalizedNames[key]];
+                                                var columnValue = data[normalizedNames[key]]
                                                 if (columnValue > 0) {
-                                                    totalSum = totalSum + columnValue;
+                                                    totalSum = totalSum + columnValue
                                                 }
                                             }
 
-                                            return (totalSum > 0) ? (100.0 * currentColumnValue / totalSum) : 0;
-                                        };
+                                            return (totalSum > 0) ? (100.0 * currentColumnValue / totalSum) : 0
+                                        }
 
-                                        j++;
-                                    });
+                                        j++
+                                    })
                                 }
 
-                                defaultNodeProperties['pie-size'] = '80%';
+                                defaultNodeProperties['pie-size'] = '80%'
                             }
 
                         }
-                    });
+                    })
 
                     /** @namespace vpElement.dependencies.nodeSizeLocked **/
                     if (nodeSize && vpElement.dependencies.nodeSizeLocked && vpElement.dependencies.nodeSizeLocked === 'true') {
@@ -1415,18 +1385,18 @@ exports.cxToJs = class CxToJs {
                         defaultNodeProperties.width = nodeSize
                     }
 
-                    var nodeLabelPosition = getNodeLabelPosition(cyLabelPositionCoordinates);
+                    var nodeLabelPosition = getNodeLabelPosition(cyLabelPositionCoordinates)
 
-                    defaultNodeProperties['text-valign'] = nodeLabelPosition['text-valign'];
-                    defaultNodeProperties['text-halign'] = nodeLabelPosition['text-halign'];
+                    defaultNodeProperties['text-valign'] = nodeLabelPosition['text-valign']
+                    defaultNodeProperties['text-halign'] = nodeLabelPosition['text-halign']
 
                     if (nodeLabelFontFace) {
-                        var font = nodeLabelFontFace.split(',');
-                        defaultNodeProperties['font-family'] = font[0];
-                        defaultNodeProperties['font-weight'] = font[1];
+                        var font = nodeLabelFontFace.split(',')
+                        defaultNodeProperties['font-family'] = font[0]
+                        defaultNodeProperties['font-weight'] = font[1]
                     } else {
-                        defaultNodeProperties['font-family'] = 'sans-serif';
-                        defaultNodeProperties['font-weight'] = 'normal';
+                        defaultNodeProperties['font-family'] = 'sans-serif'
+                        defaultNodeProperties['font-weight'] = 'normal'
                     }
                     var defaultNodeStyle = { 'selector': 'node', 'css': defaultNodeProperties }
                     nodeDefaultStyles.push(defaultNodeStyle)
@@ -1441,18 +1411,18 @@ exports.cxToJs = class CxToJs {
                         ) {
 
                             elementType = 'node'
-                            var styles = mappingStyle(elementType, vp, mapping.type, mapping.definition, attributeNameMap);
-                            nodeDefaultMappings = nodeDefaultMappings.concat(styles);
+                            var styles = mappingStyle(elementType, vp, mapping.type, mapping.definition, attributeNameMap)
+                            nodeDefaultMappings = nodeDefaultMappings.concat(styles)
                         }
                     })
 
                 } else if (elementType === 'edges:default') {
 
-                    var defaultEdgeProperties = {};
-                    var selectedEdgeProperties = {};
+                    var defaultEdgeProperties = {}
+                    var selectedEdgeProperties = {}
                     _.forEach(vpElement.properties, function (value, vp) {
-                        var cyVisualAttribute = null;
-                        var cyVisualAttributeType = null;
+                        var cyVisualAttribute = null
+                        var cyVisualAttributeType = null
                         //console.log('default node property ' + vp + ' = ' + value);
                         //special cases for locked edge color
                         /** @namespace vpElement.dependencies.arrowColorMatchesEdge **/
@@ -1460,74 +1430,74 @@ exports.cxToJs = class CxToJs {
                             if (vp !== 'EDGE_STROKE_UNSELECTED_PAINT' && vp !== 'EDGE_SOURCE_ARROW_UNSELECTED_PAINT' &&
                                 vp !== 'EDGE_TARGET_ARROW_UNSELECTED_PAINT') {
                                 if (vp === 'EDGE_UNSELECTED_PAINT') {   // add extra handling since the color is locked
-                                    cyVisualAttribute = getCyVisualAttributeForVP('EDGE_SOURCE_ARROW_UNSELECTED_PAINT');
-                                    cyVisualAttributeType = getCyVisualAttributeTypeForVp('EDGE_SOURCE_ARROW_UNSELECTED_PAINT');
-                                    defaultEdgeProperties[cyVisualAttribute] = getCyVisualAttributeValue(value, cyVisualAttributeType);
-                                    cyVisualAttribute = getCyVisualAttributeForVP('EDGE_TARGET_ARROW_UNSELECTED_PAINT');
-                                    cyVisualAttributeType = getCyVisualAttributeTypeForVp('EDGE_TARGET_ARROW_UNSELECTED_PAINT');
-                                    defaultEdgeProperties[cyVisualAttribute] = getCyVisualAttributeValue(value, cyVisualAttributeType);
+                                    cyVisualAttribute = getCyVisualAttributeForVP('EDGE_SOURCE_ARROW_UNSELECTED_PAINT')
+                                    cyVisualAttributeType = getCyVisualAttributeTypeForVp('EDGE_SOURCE_ARROW_UNSELECTED_PAINT')
+                                    defaultEdgeProperties[cyVisualAttribute] = getCyVisualAttributeValue(value, cyVisualAttributeType)
+                                    cyVisualAttribute = getCyVisualAttributeForVP('EDGE_TARGET_ARROW_UNSELECTED_PAINT')
+                                    cyVisualAttributeType = getCyVisualAttributeTypeForVp('EDGE_TARGET_ARROW_UNSELECTED_PAINT')
+                                    defaultEdgeProperties[cyVisualAttribute] = getCyVisualAttributeValue(value, cyVisualAttributeType)
                                 }
-                                cyVisualAttribute = getCyVisualAttributeForVP(vp);
+                                cyVisualAttribute = getCyVisualAttributeForVP(vp)
                                 if (cyVisualAttribute) {
-                                    cyVisualAttributeType = getCyVisualAttributeTypeForVp(vp);
-                                    defaultEdgeProperties[cyVisualAttribute] = getCyVisualAttributeValue(value, cyVisualAttributeType);
+                                    cyVisualAttributeType = getCyVisualAttributeTypeForVp(vp)
+                                    defaultEdgeProperties[cyVisualAttribute] = getCyVisualAttributeValue(value, cyVisualAttributeType)
                                 } else if (vp === 'EDGE_STROKE_SELECTED_PAINT') {
-                                    selectedEdgeProperties['line-color'] = getCyVisualAttributeValue(value, 'color');
+                                    selectedEdgeProperties['line-color'] = getCyVisualAttributeValue(value, 'color')
                                 } else if (vp === 'EDGE_SOURCE_ARROW_SELECTED_PAINT') {
-                                    selectedEdgeProperties['source-arrow-color'] = getCyVisualAttributeValue(value, 'color');
+                                    selectedEdgeProperties['source-arrow-color'] = getCyVisualAttributeValue(value, 'color')
                                 } else if (vp === 'EDGE_TARGET_ARROW_SELECTED_PAINT') {
-                                    selectedEdgeProperties['target-arrow-color'] = getCyVisualAttributeValue(value, 'color');
+                                    selectedEdgeProperties['target-arrow-color'] = getCyVisualAttributeValue(value, 'color')
                                 }
 
                             }
                         } else {
                             if (vp !== 'EDGE_UNSELECTED_PAINT') {
-                                cyVisualAttribute = getCyVisualAttributeForVP(vp);
+                                cyVisualAttribute = getCyVisualAttributeForVP(vp)
                                 if (cyVisualAttribute) {
-                                    cyVisualAttributeType = getCyVisualAttributeTypeForVp(vp);
-                                    defaultEdgeProperties[cyVisualAttribute] = getCyVisualAttributeValue(value, cyVisualAttributeType);
+                                    cyVisualAttributeType = getCyVisualAttributeTypeForVp(vp)
+                                    defaultEdgeProperties[cyVisualAttribute] = getCyVisualAttributeValue(value, cyVisualAttributeType)
                                 } else if (vp === 'EDGE_STROKE_SELECTED_PAINT') {
-                                    selectedEdgeProperties['line-color'] = getCyVisualAttributeValue(value, 'color');
+                                    selectedEdgeProperties['line-color'] = getCyVisualAttributeValue(value, 'color')
                                 } else if (vp === 'EDGE_SOURCE_ARROW_SELECTED_PAINT') {
-                                    selectedEdgeProperties['source-arrow-color'] = getCyVisualAttributeValue(value, 'color');
+                                    selectedEdgeProperties['source-arrow-color'] = getCyVisualAttributeValue(value, 'color')
                                 } else if (vp === 'EDGE_TARGET_ARROW_SELECTED_PAINT') {
-                                    selectedEdgeProperties['target-arrow-color'] = getCyVisualAttributeValue(value, 'color');
+                                    selectedEdgeProperties['target-arrow-color'] = getCyVisualAttributeValue(value, 'color')
                                 }
                             }
                         }
 
 
-                    });
+                    })
                     if (_.keys(selectedEdgeProperties).length > 0) {
-                        edgeSelectedStyles.push({ 'selector': 'edge:selected', 'css': selectedEdgeProperties });
+                        edgeSelectedStyles.push({ 'selector': 'edge:selected', 'css': selectedEdgeProperties })
                     }
-                    var defaultEdgeStyle = { 'selector': 'edge', 'css': defaultEdgeProperties };
-                    edgeDefaultStyles.push(defaultEdgeStyle);
+                    var defaultEdgeStyle = { 'selector': 'edge', 'css': defaultEdgeProperties }
+                    edgeDefaultStyles.push(defaultEdgeStyle)
 
                     _.forEach(vpElement.mappings, function (mapping, vp) {
                         //console.log(mapping);
                         //console.log('VP = ' + vp);
-                        elementType = 'edge';
-                        var styles = null;
+                        elementType = 'edge'
+                        var styles = null
 
                         if (vpElement.dependencies.arrowColorMatchesEdge === 'true') {
                             if (vp !== 'EDGE_STROKE_UNSELECTED_PAINT' && vp !== 'EDGE_SOURCE_ARROW_UNSELECTED_PAINT' &&
                                 vp !== 'EDGE_TARGET_ARROW_UNSELECTED_PAINT') {
                                 if (vp === 'EDGE_UNSELECTED_PAINT') {
-                                    styles = mappingStyle(elementType, 'EDGE_TARGET_ARROW_UNSELECTED_PAINT', mapping.type, mapping.definition, attributeNameMap);
-                                    edgeDefaultMappings = edgeDefaultMappings.concat(styles);
-                                    styles = mappingStyle(elementType, 'EDGE_SOURCE_ARROW_UNSELECTED_PAINT', mapping.type, mapping.definition, attributeNameMap);
-                                    edgeDefaultMappings = edgeDefaultMappings.concat(styles);
+                                    styles = mappingStyle(elementType, 'EDGE_TARGET_ARROW_UNSELECTED_PAINT', mapping.type, mapping.definition, attributeNameMap)
+                                    edgeDefaultMappings = edgeDefaultMappings.concat(styles)
+                                    styles = mappingStyle(elementType, 'EDGE_SOURCE_ARROW_UNSELECTED_PAINT', mapping.type, mapping.definition, attributeNameMap)
+                                    edgeDefaultMappings = edgeDefaultMappings.concat(styles)
                                 }
-                                styles = mappingStyle(elementType, vp, mapping.type, mapping.definition, attributeNameMap);
-                                edgeDefaultMappings = edgeDefaultMappings.concat(styles);
+                                styles = mappingStyle(elementType, vp, mapping.type, mapping.definition, attributeNameMap)
+                                edgeDefaultMappings = edgeDefaultMappings.concat(styles)
                             }
                         } else {
 
-                            styles = mappingStyle(elementType, vp, mapping.type, mapping.definition, attributeNameMap);
-                            edgeDefaultMappings = edgeDefaultMappings.concat(styles);
+                            styles = mappingStyle(elementType, vp, mapping.type, mapping.definition, attributeNameMap)
+                            edgeDefaultMappings = edgeDefaultMappings.concat(styles)
                         }
-                    });
+                    })
 
                     /*   _.forEach(vpElement.dependencies, function(value, vp) {
                            if ( vp === 'arrowColorMatchesEdge') {
@@ -1540,36 +1510,36 @@ exports.cxToJs = class CxToJs {
                 } else if (elementType === 'nodes') {
                     // 'bypass' setting node specific properties
                     /** @namespace vpElement.applies_to **/
-                    var nodeId = vpElement.applies_to;
-                    var nodeProperties = {};
+                    var nodeId = vpElement.applies_to
+                    var nodeProperties = {}
                     _.forEach(vpElement.properties, function (value, vp) {
-                        var cyVisualAttribute = getCyVisualAttributeForVP(vp);
+                        var cyVisualAttribute = getCyVisualAttributeForVP(vp)
                         if (cyVisualAttribute) {
-                            var cyVisualAttributeType = getCyVisualAttributeTypeForVp(vp);
-                            nodeProperties[cyVisualAttribute] = getCyVisualAttributeValue(value, cyVisualAttributeType);
+                            var cyVisualAttributeType = getCyVisualAttributeTypeForVp(vp)
+                            nodeProperties[cyVisualAttribute] = getCyVisualAttributeValue(value, cyVisualAttributeType)
                         }
-                    });
-                    var nodeSelector = 'node[ id = \'' + nodeId + '\' ]';
-                    var nodeStyle = { 'selector': nodeSelector, 'css': nodeProperties };
-                    nodeSpecificStyles.push(nodeStyle);
+                    })
+                    var nodeSelector = 'node[ id = \'' + nodeId + '\' ]'
+                    var nodeStyle = { 'selector': nodeSelector, 'css': nodeProperties }
+                    nodeSpecificStyles.push(nodeStyle)
 
                 } else if (elementType === 'edges') {
                     // 'bypass' setting edge specific properties
-                    var edgeId = vpElement.applies_to;
-                    var edgeProperties = {};
+                    var edgeId = vpElement.applies_to
+                    var edgeProperties = {}
                     _.forEach(vpElement.properties, function (value, vp) {
-                        var cyVisualAttribute = getCyVisualAttributeForVP(vp);
+                        var cyVisualAttribute = getCyVisualAttributeForVP(vp)
                         if (cyVisualAttribute) {
-                            var cyVisualAttributeType = getCyVisualAttributeTypeForVp(vp);
-                            edgeProperties[cyVisualAttribute] = getCyVisualAttributeValue(value, cyVisualAttributeType);
+                            var cyVisualAttributeType = getCyVisualAttributeTypeForVp(vp)
+                            edgeProperties[cyVisualAttribute] = getCyVisualAttributeValue(value, cyVisualAttributeType)
                         }
-                    });
-                    var edgeSelector = 'edge[ id = \'e' + edgeId + '\' ]';
-                    var edgeStyle = { 'selector': edgeSelector, 'css': edgeProperties };
-                    edgeSpecificStyles.push(edgeStyle);
+                    })
+                    var edgeSelector = 'edge[ id = \'e' + edgeId + '\' ]'
+                    var edgeStyle = { 'selector': edgeSelector, 'css': edgeProperties }
+                    edgeSpecificStyles.push(edgeStyle)
                 }
-            });
-        });
+            })
+        })
 
         return nodeDefaultStyles.concat(
             nodeDefaultMappings,
@@ -1578,8 +1548,8 @@ exports.cxToJs = class CxToJs {
             edgeDefaultMappings,
             edgeSpecificStyles,
             nodeSelectedStyles,
-            edgeSelectedStyles);
-    };
+            edgeSelectedStyles)
+    }
 
 
     /*
@@ -1638,27 +1608,27 @@ exports.cxToJs = class CxToJs {
 
 
     allNodesHaveUniquePositions(cyElements) {
-        var nodePositionMap = {};
-        var nodes = cyElements.nodes;
+        var nodePositionMap = {}
+        var nodes = cyElements.nodes
         for (var nodeIndex = 0; nodeIndex < nodes.length; nodeIndex++) {
-            var node = nodes[nodeIndex];
-            var position = node.position;
+            var node = nodes[nodeIndex]
+            var position = node.position
             if (!position) {
                 // found a node without a position so we return false
-                return false;
+                return false
             }
-            var positionKey = position.x + '_' + position.y;
+            var positionKey = position.x + '_' + position.y
             if (nodePositionMap[positionKey]) {
                 // found a duplicate position so we return false
-                return false;
+                return false
             } else {
                 // add this position to the map
-                nodePositionMap[positionKey] = position;
+                nodePositionMap[positionKey] = position
             }
 
         }
-        return true;
-    };
+        return true
+    }
 
     /*
     factory.getCy = function () {
@@ -1667,30 +1637,6 @@ exports.cxToJs = class CxToJs {
     */
 }
 
-exports.testCxToJS = () => {
-    var cxutils = new cyNetworkUtils()
-    var cx2js = cx2js(cxutils)
-    
-    console.log("\n *START* \n")
-    var content = fs.readFileSync("small_graph.cx")
-    var rawCX = JSON.parse(content)
-    var niceCX = cxutils.rawCXtoNiceCX(rawCX)
-    var attributeNameMap = {}; //cyService.createElementAttributeTable(cxNetwork);
-    var cyElements = cx2js.cyElementsFromNiceCX(niceCX, attributeNameMap);
-    console.log(cyjs)
-    console.log('Test complete')
-}
-
-exports.testUtils = () => {
-    var cxutils = new cyNetworkUtils()
-    var fs = require("fs")
-    console.log("\n *START* \n")
-    var content = fs.readFileSync("small_graph.cx")
-    var rawCX = JSON.parse(content)
-    var niceCX = cxutils.rawCXtoNiceCX(rawCX)
-    console.log(niceCX)
-    console.log('Test complete')
-}
 
 exports.cyNetworkUtils = class CyNetworkUtils {
 
@@ -1700,106 +1646,106 @@ exports.cyNetworkUtils = class CyNetworkUtils {
 
     rawCXtoNiceCX(rawCX) {
 
-        var niceCX = {};
-        niceCX['edges'] = {};
+        var niceCX = {}
+        niceCX['edges'] = {}
 
         for (var i = 0; i < rawCX.length; i++) {
-            var fragment = rawCX[i];
+            var fragment = rawCX[i]
             if (fragment) {
-                var aspectName;
+                var aspectName
                 for (aspectName in fragment) {
 
-                    var elements = fragment[aspectName];
+                    var elements = fragment[aspectName]
 
                     if (aspectName === 'numberVerification') {
 
                         if (!niceCX.numberVerification) {
-                            niceCX.numberVerification = fragment;
+                            niceCX.numberVerification = fragment
                         }
-                        continue;
+                        continue
 
                     } else if (aspectName === 'status') {
 
                         if (!niceCX.status) {
-                            niceCX.status = fragment;
+                            niceCX.status = fragment
                         }
-                        continue;
+                        continue
 
                     } else if (aspectName === 'metaData') {
 
                         if (!niceCX.preMetaData) {
 
-                            niceCX.preMetaData = fragment;
+                            niceCX.preMetaData = fragment
 
                         } else if (!niceCX.postMetaData) {
 
-                            niceCX.postMetaData = fragment;
+                            niceCX.postMetaData = fragment
                         }
-                        continue;
+                        continue
                     }
 
                     for (var j = 0; j < elements.length; j++) {
-                        var element = elements[j];
-                        this.handleCxElement(aspectName, element, niceCX);
+                        var element = elements[j]
+                        this.handleCxElement(aspectName, element, niceCX)
                     }
                 }
             }
         }
 
-        return niceCX;
-    };
+        return niceCX
+    }
 
 
     computePreMetadata(niceCX) {
-        var preMetaData = [];
-        var d = new Date();
-        var currentTime = d.getTime();
+        var preMetaData = []
+        var d = new Date()
+        var currentTime = d.getTime()
 
         _.forEach(niceCX, function (aspectValues, aspectName) {
             var metadataElement = {
-                "consistencyGroup": 1,
+                'consistencyGroup': 1,
                 //    "elementCount" : aspectValues.length,
-                "lastUpdate": currentTime,
-                "name": aspectName,
-                "properties": [],
-                "version": "1.0"
-            };
+                'lastUpdate': currentTime,
+                'name': aspectName,
+                'properties': [],
+                'version': '1.0'
+            }
 
             if (aspectName === 'nodes' ||
                 aspectName === 'edges' ||
                 aspectName === 'citations' ||
                 aspectName === 'supports') {
-                var objids = Object.keys(aspectValues);
-                metadataElement['elementCount'] = objids.length;
-                metadataElement["idCounter"] = Number(objids.reduce(function (a, b) {
-                    return Number(a) > Number(b) ? a : b;
-                }));
+                var objids = Object.keys(aspectValues)
+                metadataElement['elementCount'] = objids.length
+                metadataElement['idCounter'] = Number(objids.reduce(function (a, b) {
+                    return Number(a) > Number(b) ? a : b
+                }))
             }
 
-            preMetaData.push(metadataElement);
-        });
+            preMetaData.push(metadataElement)
+        })
 
-        return { "metaData": preMetaData };
-    };
+        return { 'metaData': preMetaData }
+    }
 
     niceCXToRawCX(niceCX) {
 
-        var rawCX = [];
+        var rawCX = []
 
         if (niceCX.numberVerification) {
-            rawCX.push(niceCX.numberVerification);
+            rawCX.push(niceCX.numberVerification)
         } else {
             rawCX.push({
-                "numberVerification": [{
-                    "longNumber": 281474976710655
+                'numberVerification': [{
+                    'longNumber': 281474976710655
                 }]
-            });
+            })
         }
 
         if (niceCX.preMetaData) {
-            rawCX.push(niceCX.preMetaData);
+            rawCX.push(niceCX.preMetaData)
         } else {
-            rawCX.push(computePreMetadata(niceCX));
+            rawCX.push(this.computePreMetadata(niceCX))
         }
 
         for (var aspectName in niceCX) {
@@ -1807,260 +1753,257 @@ exports.cyNetworkUtils = class CyNetworkUtils {
 
             if ((aspectName === 'preMetaData') || (aspectName === 'postMetaData') ||
                 (aspectName === 'numberVerification') || (aspectName === 'status')) {
-                continue;
+                continue
 
             }
 
-            var elements = [];
+            var elements = []
 
             if (aspectName === 'nodes' || aspectName === 'edges' ||
                 aspectName === 'citations' || aspectName === 'supports' || aspectName === 'functionTerms') {
 
                 _.forEach(niceCX[aspectName], function (element, id) {
-                    elements.push(element);
-                });
+                    elements.push(element)
+                })
             } else if (aspectName === 'nodeAttributes' || aspectName === 'edgeAttributes') {
                 _.forEach(niceCX[aspectName], function (attributes, id) {
                     _.forEach(attributes, function (attribute, attrName) {
-                        elements.push(attribute);
-                    });
-                });
+                        elements.push(attribute)
+                    })
+                })
 
             } else if (aspectName === 'edgeCitations' || aspectName === 'nodeCitations') {
                 _.forEach(niceCX[aspectName], function (citationIds, elementId) {
-                    var citation = { 'po': [Number(elementId)], 'citations': citationIds };
-                    elements.push(citation);
-                });
+                    var citation = { 'po': [Number(elementId)], 'citations': citationIds }
+                    elements.push(citation)
+                })
 
             } else if (aspectName === 'edgeSupports' || aspectName === 'nodeSupports') {
                 _.forEach(niceCX[aspectName], function (supportIds, elementId) {
-                    var support = { 'po': [Number(elementId)], 'supports': supportIds };
-                    elements.push(support);
-                });
+                    var support = { 'po': [Number(elementId)], 'supports': supportIds }
+                    elements.push(support)
+                })
             } else {
-                elements = niceCX[aspectName]['elements'];
+                elements = niceCX[aspectName]['elements']
             }
 
             if (elements.length > 0) {
-                var fragment = {};
-                fragment[aspectName] = elements;
-                rawCX.push(fragment);
+                var fragment = {}
+                fragment[aspectName] = elements
+                rawCX.push(fragment)
             }
         }
 
         if (niceCX.postMetaData) {
-            rawCX.push(niceCX.postMetaData);
+            rawCX.push(niceCX.postMetaData)
         }
 
         if (niceCX.status) {
-            rawCX.push(niceCX.status);
+            rawCX.push(niceCX.status)
         } else {
             rawCX.push({
-                "status": [{
-                    "error": "",
-                    "success": true
+                'status': [{
+                    'error': '',
+                    'success': true
                 }]
-            });
+            })
         }
-
-        return rawCX;
-    };
+        return rawCX
+    }
 
 
     addElementToAspectValueMap(aspectValueMap, element) {
-        var attributes = aspectValueMap[element.po];
+        var attributes = aspectValueMap[element.po]
 
         if (!attributes) {
-            attributes = {};
-            aspectValueMap[element.po] = attributes;
+            attributes = {}
+            aspectValueMap[element.po] = attributes
         }
 
-        attributes[element.n] = element;
-    };
+        attributes[element.n] = element
+    }
 
 
     addRelationToRelationAspect(aspect, element, relationName) {
 
         for (var l = 0; l < element.po.length; l++) {
-            var srcId = element.po[l];
-            var relations = aspect[srcId];
+            var srcId = element.po[l]
+            var relations = aspect[srcId]
             if (!relations) {
-                aspect[srcId] = element[relationName];
+                aspect[srcId] = element[relationName]
             } else {
-                aspect[srcId].push.apply(element[relationName]);
+                aspect[srcId].push.apply(element[relationName])
             }
         }
-    };
+    }
 
     handleCxElement(aspectName, element, niceCX) {
 
-        var aspect = niceCX[aspectName];
+        var aspect = niceCX[aspectName]
 
         if (!aspect) {
-            aspect = {};
+            aspect = {}
 
-            niceCX[aspectName] = aspect;
+            niceCX[aspectName] = aspect
         }
 
         switch (aspectName) {
-            case 'nodes':
-            case 'edges':
-            case 'citations':
-            case 'supports':
-                aspect[element['@id']] = element;
-                break;
-            case 'nodeAttributes':
-                this.addElementToAspectValueMap(aspect, element);
-                break;
-            case 'edgeAttributes':
-                this.addElementToAspectValueMap(aspect, element);
-                break;
-            case 'edgeCitations':
-            case 'nodeCitations':
-                this.addRelationToRelationAspect(aspect, element, 'citations');
-                break;
-            case 'edgeSupports':
-            case 'nodeSupports':
-                this.addRelationToRelationAspect(aspect, element, 'supports');
-                break;
-            case 'functionTerms':
-                aspect[element['po']] = element;
-                break;
-            default:
-                // opaque for now
-
-                if (!aspect.elements) {
-                    aspect.elements = [];
-                }
-
-                aspect.elements.push(element);
+        case 'nodes':
+        case 'edges':
+        case 'citations':
+        case 'supports':
+            aspect[element['@id']] = element
+            break
+        case 'nodeAttributes':
+            this.addElementToAspectValueMap(aspect, element)
+            break
+        case 'edgeAttributes':
+            this.addElementToAspectValueMap(aspect, element)
+            break
+        case 'edgeCitations':
+        case 'nodeCitations':
+            this.addRelationToRelationAspect(aspect, element, 'citations')
+            break
+        case 'edgeSupports':
+        case 'nodeSupports':
+            this.addRelationToRelationAspect(aspect, element, 'supports')
+            break
+        case 'functionTerms':
+            aspect[element['po']] = element
+            break
+        default:
+            // opaque for now
+            if (!aspect.elements) {
+                aspect.elements = []
+            }
+            aspect.elements.push(element)
         }
-    };
+    }
 
 
     /** utility functions for nice cx */
 
     getNodes(niceCX) {
-        return Object.values(niceCX['nodes']);
-    };
+        return Object.values(niceCX['nodes'])
+    }
 
     getNodeAttributes(niceCX) {
-        return niceCX['nodeAttributes'];
-    };
+        return niceCX['nodeAttributes']
+    }
 
     getEdges(niceCX) {
-        return Object.values(niceCX.edges);
-    };
+        return Object.values(niceCX.edges)
+    }
 
     getEdgeAttributes(niceCX) {
-        return niceCX['edgeAttributes'];
-    };
+        return niceCX['edgeAttributes']
+    }
 
     stringifyFunctionTerm(functionTerm) {
-        var params = [];
-        angular.forEach(functionTerm.args, function (parameter) {
+        var params = []
+        _.forEach(functionTerm.args, function (parameter) {
             if (parameter.f) {
-                params.push(stringifyFunctionTerm(parameter));
+                params.push(this.stringifyFunctionTerm(parameter))
             } else {
-                params.push(parameter);
+                params.push(parameter)
             }
-        });
-        return abbreviate(functionTerm.f) + '(' + params.join(', ') + ')';
-    };
+        })
+        return this.abbreviate(functionTerm.f) + '(' + params.join(', ') + ')'
+    }
 
 
     abbreviate(functionName) {
-        var pureFunctionName = functionName;
-        var arr = functionName.split(':');
+        var pureFunctionName = functionName
+        var arr = functionName.split(':')
         if (arr.length == 2)
-            pureFunctionName = arr[1];
+            pureFunctionName = arr[1]
 
         switch (pureFunctionName) {
-            case 'abundance':
-                return 'a';
-            case 'biologicalProcess':
-                return 'bp';
-            case 'catalyticActivity':
-                return 'cat';
-            case 'cellSecretion':
-                return 'sec';
-            case 'cellSurfaceExpression':
-                return 'surf';
-            case 'chaperoneActivity':
-                return 'chap';
-            case 'complexAbundance':
-                return 'complex';
-            case 'compositeAbundance':
-                return 'composite';
-            case 'degradation':
-                return 'deg';
-            case 'fusion':
-                return 'fus';
-            case 'geneAbundance':
-                return 'g';
-            case 'gtpBoundActivity':
-                return 'gtp';
-            case 'kinaseActivity':
-                return 'kin';
-            case 'microRNAAbundance':
-                return 'm';
-            case 'molecularActivity':
-                return 'act';
-            case 'pathology':
-                return 'path';
-            case 'peptidaseActivity':
-                return 'pep';
-            case 'phosphateActivity':
-                return 'phos';
-            case 'proteinAbundance':
-                return 'p';
-            case 'proteinModification':
-                return 'pmod';
-            case 'reaction':
-                return 'rxn';
-            case 'ribosylationActivity':
-                return 'ribo';
-            case 'rnaAbundance':
-                return 'r';
-            case 'substitution':
-                return 'sub';
-            case 'translocation':
-                return 'tloc';
-            case 'transcriptionalActivity':
-                return 'tscript';
-            case 'transportActivity':
-                return 'tport';
-            case 'truncation':
-                return 'trunc';
-            case 'increases':
-                return '->';
-            case 'decreases':
-                return '-|';
-            case 'directlyIncreases':
-                return '=>';
-            case 'directlyDecreases':
-                return '=|';
-            default:
-                return pureFunctionName;
+        case 'abundance':
+            return 'a'
+        case 'biologicalProcess':
+            return 'bp'
+        case 'catalyticActivity':
+            return 'cat'
+        case 'cellSecretion':
+            return 'sec'
+        case 'cellSurfaceExpression':
+            return 'surf'
+        case 'chaperoneActivity':
+            return 'chap'
+        case 'complexAbundance':
+            return 'complex'
+        case 'compositeAbundance':
+            return 'composite'
+        case 'degradation':
+            return 'deg'
+        case 'fusion':
+            return 'fus'
+        case 'geneAbundance':
+            return 'g'
+        case 'gtpBoundActivity':
+            return 'gtp'
+        case 'kinaseActivity':
+            return 'kin'
+        case 'microRNAAbundance':
+            return 'm'
+        case 'molecularActivity':
+            return 'act'
+        case 'pathology':
+            return 'path'
+        case 'peptidaseActivity':
+            return 'pep'
+        case 'phosphateActivity':
+            return 'phos'
+        case 'proteinAbundance':
+            return 'p'
+        case 'proteinModification':
+            return 'pmod'
+        case 'reaction':
+            return 'rxn'
+        case 'ribosylationActivity':
+            return 'ribo'
+        case 'rnaAbundance':
+            return 'r'
+        case 'substitution':
+            return 'sub'
+        case 'translocation':
+            return 'tloc'
+        case 'transcriptionalActivity':
+            return 'tscript'
+        case 'transportActivity':
+            return 'tport'
+        case 'truncation':
+            return 'trunc'
+        case 'increases':
+            return '->'
+        case 'decreases':
+            return '-|'
+        case 'directlyIncreases':
+            return '=>'
+        case 'directlyDecreases':
+            return '=|'
+        default:
+            return pureFunctionName
         }
-    };
+    }
 
     createCXFunctionTerm(oldJSONNetwork, jsonFunctionTerm) {
-        var functionTerm = { 'f': getBaseTermStr(oldJSONNetwork, jsonFunctionTerm.functionTermId) };
-        var parameters = [];
+        var functionTerm = { 'f': this.getBaseTermStr(oldJSONNetwork, jsonFunctionTerm.functionTermId) }
+        var parameters = []
         _.forEach(jsonFunctionTerm.parameterIds, function (parameterId) {
-            var baseTerm = oldJSONNetwork['baseTerms'][parameterId];
+            var baseTerm = oldJSONNetwork['baseTerms'][parameterId]
             if (baseTerm) {
-                parameters.push(getBaseTermStr(oldJSONNetwork, parameterId));
+                parameters.push(this.getBaseTermStr(oldJSONNetwork, parameterId))
             } else {
-                var paraFunctionTerm = oldJSONNetwork['functionTerms'][parameterId];
-                parameters.push(createCXFunctionTerm(oldJSONNetwork, paraFunctionTerm));
+                var paraFunctionTerm = oldJSONNetwork['functionTerms'][parameterId]
+                parameters.push(this.createCXFunctionTerm(oldJSONNetwork, paraFunctionTerm))
             }
-        });
-        functionTerm['args'] = parameters;
+        })
+        functionTerm['args'] = parameters
 
-        return functionTerm;
-    };
+        return functionTerm
+    }
 
     /*-----------------------------------------------------------------------*
      * Convert network received in JSON format to NiceCX;
@@ -2071,104 +2014,104 @@ exports.cyNetworkUtils = class CyNetworkUtils {
         var niceCX = {
             'edges': {},
             'nodes': {}
-        };
+        }
 
         if (Object.keys(network.namespaces).length > 0) {
-            var nstable = {};
-            niceCX['@context'] = { 'elements': [nstable] };
+            var nstable = {}
+            niceCX['@context'] = { 'elements': [nstable] }
 
-            $.each(network.namespaces, function (namespaceId, namespace) {
-                nstable[namespace['prefix']] = namespace['uri'];
+            _.each(network.namespaces, function (namespaceId, namespace) {
+                nstable[namespace['prefix']] = namespace['uri']
                 /*  _.forEach(namespace, function (value, prefix) {
                  nstable[prefix] = value;
                  }); */
-            });
+            })
         }
 
         if (network.properties) {
             _.forEach(network.properties, function (propertyObj) {
                 self.setNetworkProperty(niceCX, propertyObj['predicateString'], propertyObj['value'],
                     propertyObj['dataType'])
-            });
+            })
         }
 
-        var functionTermTable = {};  //functionTermId to CXFunctionTerm maping table.
+        var functionTermTable = {}  //functionTermId to CXFunctionTerm maping table.
         if (network.functionTerms) {
-            niceCX['functionTerms'] = {};
+            niceCX['functionTerms'] = {}
             _.forEach(network.functionTerms, function (funcTerm, id) {
-                functionTermTable[id] = createCXFunctionTerm(network, funcTerm);
-            });
+                functionTermTable[id] = this.createCXFunctionTerm(network, funcTerm)
+            })
         }
 
-        $.each(network.citations, function (citationId, citation) {
+        _.each(network.citations, function (citationId, citation) {
             /* ATTENTION: we still need to process citation.contributors and citation.properties fields */
 
             var citationElement = {
-                "@id": citation.id,
-                "dc:identifier": (citation.identifier) ? citation.identifier : null,
-                "dc:title": citation.title,
-                "dc:type": (citation.idType) ? citation.idType : null,
-                "dc:description": (citation.description) ? citation.description : null,
-                "dc:contributor": citation.constructor
-            };
+                '@id': citation.id,
+                'dc:identifier': (citation.identifier) ? citation.identifier : null,
+                'dc:title': citation.title,
+                'dc:type': (citation.idType) ? citation.idType : null,
+                'dc:description': (citation.description) ? citation.description : null,
+                'dc:contributor': citation.constructor
+            }
 
             // ALSO:  do we want to add citationElement as a lookup with citationID as the key --
             // if yest, then use addElementToNiceCXForLookup() below instead of addElementToNiceCX()
             //addElementToNiceCXForLookup(niceCX, 'citations', citationId, citationElement);
 
-            addElementToNiceCX(niceCX, 'citations', citationElement);
-        });
+            this.addElementToNiceCX(niceCX, 'citations', citationElement)
+        })
 
 
 
-        $.each(network.supports, function (supportId, support) {
+        _.each(network.supports, function (supportId, support) {
             /* ATTENTION: we still need to process citation.contributors and citation.properties fields */
 
             var supportElement = {
-                "@id": supportId,
-                "text": support.text,
-                "citation": support.citaitonId
+                '@id': supportId,
+                'text': support.text,
+                'citation': support.citaitonId
 
-            };
+            }
 
             // ALSO:  do we want to add citationElement as a lookup with citationID as the key --
             // if yest, then use addElementToNiceCXForLookup() below instead of addElementToNiceCX()
             //addElementToNiceCXForLookup(niceCX, 'citations', citationId, citationElement);
 
-            addElementToNiceCX(niceCX, 'supports', supportElement);
-        });
+            this.addElementToNiceCX(niceCX, 'supports', supportElement)
+        })
 
-        $.each(network.nodes, function (nodeId, node) {
+        _.each(network.nodes, function (nodeId, node) {
             var element = {
                 '@id': nodeId
-            };
+            }
 
             if (node.name)
-                element['n'] = node.name;
+                element['n'] = node.name
 
             if (node.represents) {
                 if (node.representsTermType === 'baseTerm') {
-                    element['r'] = getBaseTermStr(network, node.represents);
+                    element['r'] = this.getBaseTermStr(network, node.represents)
                 } else if (node.representsTermType === 'functionTerm') {
-                    var cxFunctionTerm = functionTermTable[node.represents];
-                    cxFunctionTerm['po'] = nodeId;
-                    niceCX['functionTerms'][nodeId] = cxFunctionTerm;
+                    var cxFunctionTerm = functionTermTable[node.represents]
+                    cxFunctionTerm['po'] = nodeId
+                    niceCX['functionTerms'][nodeId] = cxFunctionTerm
                 } else {
-                    console.log("unsupported termType found in the network ...");
+                    //console.log('unsupported termType found in the network ...')
                 }
             }
 
-            addElementToNiceCX(niceCX, 'nodes', element);
+            this.addElementToNiceCX(niceCX, 'nodes', element)
 
             if (node.aliases && node.aliases.length > 0) {
-                var aliasList = buildBasetermStrListFromIDs(network, node.aliases);
-                setNodeAttribute(niceCX, nodeId, 'alias', aliasList, 'list_of_string');
+                var aliasList = this.buildBasetermStrListFromIDs(network, node.aliases)
+                this.setNodeAttribute(niceCX, nodeId, 'alias', aliasList, 'list_of_string')
             }
 
             // related terms...
             if (node.relatedTerms && node.relatedTerms.length > 0) {
-                var relatedToList = buildBasetermStrListFromIDs(network, node.relatedTerms);
-                setNodeAttribute(niceCX, nodeId, 'relatedTo', relatedToList, 'list_of_string');
+                var relatedToList = this.buildBasetermStrListFromIDs(network, node.relatedTerms)
+                this.setNodeAttribute(niceCX, nodeId, 'relatedTo', relatedToList, 'list_of_string')
             }
 
             //node properties
@@ -2176,10 +2119,10 @@ exports.cyNetworkUtils = class CyNetworkUtils {
 
                 for (var i = 0; i < node.properties.length; i++) {
 
-                    var propertyObj = node.properties[i];
+                    var propertyObj = node.properties[i]
 
-                    setNodeAttribute(niceCX, nodeId, propertyObj['predicateString'], propertyObj['value'],
-                        propertyObj['dataType']);
+                    this.setNodeAttribute(niceCX, nodeId, propertyObj['predicateString'], propertyObj['value'],
+                        propertyObj['dataType'])
                 }
 
             }
@@ -2187,120 +2130,120 @@ exports.cyNetworkUtils = class CyNetworkUtils {
 
             if (node.citationIds && node.citationIds.length > 0) {
 
-                var aspect = niceCX['nodeCitations'];
+                var aspect = niceCX['nodeCitations']
                 if (!aspect) {
-                    aspect = {};
-                    niceCX['nodeCitations'] = aspect;
+                    aspect = {}
+                    niceCX['nodeCitations'] = aspect
                 }
 
-                var oldList = aspect[nodeId];
+                var oldList = aspect[nodeId]
 
                 if (!oldList) {
-                    oldList = [];
-                    aspect[nodeId] = oldList;
+                    oldList = []
+                    aspect[nodeId] = oldList
                 }
 
                 for (var i = 0; i < node.citationIds.length; i++) {
-                    oldList.push(node.citationIds[i]);
+                    oldList.push(node.citationIds[i])
                 }
 
             }
 
             if (node.supportIds && node.supportIds.length > 0) {
 
-                var aspect = niceCX['nodeSupports'];
+                var aspect = niceCX['nodeSupports']
                 if (!aspect) {
-                    aspect = {};
-                    niceCX['nodeSupports'] = aspect;
+                    aspect = {}
+                    niceCX['nodeSupports'] = aspect
                 }
 
-                var oldList = aspect[nodeId];
+                var oldList = aspect[nodeId]
 
                 if (!oldList) {
-                    oldList = [];
-                    aspect[nodeId] = oldList;
+                    oldList = []
+                    aspect[nodeId] = oldList
                 }
 
                 for (var i = 0; i < node.supportIds.length; i++) {
-                    oldList.push(node.supportIds[i]);
+                    oldList.push(node.supportIds[i])
                 }
 
             }
 
-        });
+        })
 
-        $.each(network.edges, function (edgeId, edge) {
+        _.each(network.edges, function (edgeId, edge) {
 
             var element = {
                 '@id': Number(edgeId),
                 's': edge.subjectId,
                 't': edge.objectId
-            };
-
-            if (edge.predicateId && edge.predicateId >= 0) {
-                element['i'] = getBaseTermStr(network, edge.predicateId);
             }
 
-            addElementToNiceCX(niceCX, 'edges', element);
+            if (edge.predicateId && edge.predicateId >= 0) {
+                element['i'] = this.getBaseTermStr(network, edge.predicateId)
+            }
+
+            this.addElementToNiceCX(niceCX, 'edges', element)
 
 
             if (edge.properties && edge.properties.length > 0) {
 
                 for (var i = 0; i < edge.properties.length; i++) {
 
-                    var propertyObj = edge.properties[i];
+                    var propertyObj = edge.properties[i]
 
-                    setEdgeAttribute(niceCX, edgeId, propertyObj['predicateString'], propertyObj['value'],
-                        propertyObj['dataType']);
+                    this.setEdgeAttribute(niceCX, edgeId, propertyObj['predicateString'], propertyObj['value'],
+                        propertyObj['dataType'])
                 }
             }
 
             if (edge.citationIds && edge.citationIds.length > 0) {
 
-                var aspect = niceCX['edgeCitations'];
+                var aspect = niceCX['edgeCitations']
                 if (!aspect) {
-                    aspect = {};
-                    niceCX['edgeCitations'] = aspect;
+                    aspect = {}
+                    niceCX['edgeCitations'] = aspect
                 }
 
-                var oldList = aspect[edgeId];
+                var oldList = aspect[edgeId]
 
                 if (!oldList) {
-                    oldList = [];
-                    aspect[edgeId] = oldList;
+                    oldList = []
+                    aspect[edgeId] = oldList
                 }
 
                 for (var i = 0; i < edge.citationIds.length; i++) {
-                    oldList.push(edge.citationIds[i]);
+                    oldList.push(edge.citationIds[i])
                 }
 
             }
 
             if (edge.supportIds && edge.supportIds.length > 0) {
 
-                var aspect = niceCX['edgeSupports'];
+                var aspect = niceCX['edgeSupports']
                 if (!aspect) {
-                    aspect = {};
-                    niceCX['edgeSupports'] = aspect;
+                    aspect = {}
+                    niceCX['edgeSupports'] = aspect
                 }
 
-                var oldList = aspect[edgeId];
+                var oldList = aspect[edgeId]
 
                 if (!oldList) {
-                    oldList = [];
-                    aspect[edgeId] = oldList;
+                    oldList = []
+                    aspect[edgeId] = oldList
                 }
 
                 for (var i = 0; i < edge.supportIds.length; i++) {
-                    oldList.push(edge.supportIds[i]);
+                    oldList.push(edge.supportIds[i])
                 }
 
             }
 
-        });
+        })
 
-        return niceCX;
-    };
+        return niceCX
+    }
 
     /**
      * Stringify a baseterm.
@@ -2309,51 +2252,49 @@ exports.cyNetworkUtils = class CyNetworkUtils {
      * @returns {*}
      */
     getBaseTermStr(network, baseTermId) {
-        var bterm = network.baseTerms[baseTermId];
+        var bterm = network.baseTerms[baseTermId]
         if (bterm && bterm.namespaceId && (bterm.namespaceId > 0)) {
-            var ns = network.namespaces[bterm.namespaceId];
+            var ns = network.namespaces[bterm.namespaceId]
             if (ns.prefix)
-                return ns.prefix + ":" + bterm.name;
+                return ns.prefix + ':' + bterm.name
             else
-                return ns.uri + bterm.name;
+                return ns.uri + bterm.name
         }
-        return bterm.name;
-    };
+        return bterm.name
+    }
 
     addElementToNiceCX(niceCX, aspectName, element) {
 
-        var aspect = niceCX[aspectName];
+        var aspect = niceCX[aspectName]
 
         if (!aspect) {
             // add aspect to niceCX
-            aspect = {};
+            aspect = {}
 
-            niceCX[aspectName] = aspect;
+            niceCX[aspectName] = aspect
         }
 
-        aspect[element['@id']] = element;
-    };
+        aspect[element['@id']] = element
+    }
 
 
     buildBasetermStrListFromIDs(network, arrayOfIDs) {
-        var attributes = [];
+        var attributes = []
 
         for (var i = 0; i < arrayOfIDs.length; i++) {
-            var baseTermId = arrayOfIDs[i];
-            attributes.push(getBaseTermStr(network, baseTermId));
+            var baseTermId = arrayOfIDs[i]
+            attributes.push(getBaseTermStr(network, baseTermId))
         }
-        return attributes;
-    };
+        return attributes
+    }
 
     setNodeAttribute(niceCX, nodeId, attributeName, attributeValue, attributeDataType) {
-
-        setCoreAspectAttributes(niceCX, 'nodeAttributes', nodeId, attributeName, attributeValue, attributeDataType);
-
-    };
+        this.setCoreAspectAttributes(niceCX, 'nodeAttributes', nodeId, attributeName, attributeValue, attributeDataType)
+    }
 
     setEdgeAttribute(niceCX, edgeId, attributeName, attributeValue, attributeDataType) {
-        setCoreAspectAttributes(niceCX, 'edgeAttributes', edgeId, attributeName, attributeValue, attributeDataType);
-    };
+        this.setCoreAspectAttributes(niceCX, 'edgeAttributes', edgeId, attributeName, attributeValue, attributeDataType)
+    }
 
 
     setCoreAspectAttributes(niceCX, aspectName, referenceId, attributeName, attributeValue, attributeDataType) {
@@ -2363,26 +2304,26 @@ exports.cyNetworkUtils = class CyNetworkUtils {
             'd': attributeDataType,
             'po': referenceId,
             'n': attributeName
-        };
+        }
 
         if (!niceCX[aspectName]) {
-            niceCX[aspectName] = {};
+            niceCX[aspectName] = {}
         }
 
         if (!niceCX[aspectName][referenceId]) {
-            niceCX[aspectName][referenceId] = {};
+            niceCX[aspectName][referenceId] = {}
         }
 
-        niceCX[aspectName][referenceId][attributeName] = attributeObject;
-    };
+        niceCX[aspectName][referenceId][attributeName] = attributeObject
+    }
 
 
     setNetworkProperty(niceCX, attributeName, attributeValue, attributeDataType) {
-        var dType = attributeDataType ? attributeDataType : 'string';
+        var dType = attributeDataType ? attributeDataType : 'string'
 
-        var value = ((dType.substring(0, 7) === 'list_of' && typeof attributeValue === 'string') ? JSON.parse(attributeValue) : attributeValue);
+        var value = ((dType.substring(0, 7) === 'list_of' && typeof attributeValue === 'string') ? JSON.parse(attributeValue) : attributeValue)
 
-        var attributes = niceCX['networkAttributes'];
+        var attributes = niceCX['networkAttributes']
         if (!attributes) {
             attributes = {
                 'elements': [{
@@ -2390,28 +2331,28 @@ exports.cyNetworkUtils = class CyNetworkUtils {
                     'd': dType,
                     'n': attributeName
                 }]
-            };
-            niceCX['networkAttributes'] = attributes;
+            }
+            niceCX['networkAttributes'] = attributes
         } else {
-            var found = false;
+            var found = false
             _.forEach(attributes.elements, function (attr) {
                 if (attr['n'] === attributeName) {
-                    attr['d'] = dType;
-                    attr['v'] = value;
-                    found = true;
-                    return false;
+                    attr['d'] = dType
+                    attr['v'] = value
+                    found = true
+                    return false
                 }
-            });
+            })
             if (!found) {
                 attributes['elements'].push({
                     'v': value,
                     'd': dType,
                     'n': attributeName
-                });
+                })
             }
         }
 
-    };
+    }
 
     /*
     //TODO: needs to handle collections in the future
@@ -2436,20 +2377,20 @@ exports.cyNetworkUtils = class CyNetworkUtils {
             'edgeCount': niceCX['edges'] === undefined ? 0 : Object.keys(niceCX['edges']).length,
             'nodeCount': niceCX['nodes'] === undefined ? 0 : Object.keys(niceCX['nodes']).length,
             'properties': []
-        };
+        }
 
-        const attributes = niceCX['networkAttributes'];
+        const attributes = niceCX['networkAttributes']
         if (attributes) {
             for (var i = 0; i < attributes.elements.length; i++) {
-                const attr = attributes.elements[i];
+                const attr = attributes.elements[i]
                 if (attr.n === 'name') {
-                    summary['name'] = attr.v;
+                    summary['name'] = attr.v
                 } else if (attr.n === 'description') {
-                    summary['description'] = attr.v;
+                    summary['description'] = attr.v
                 } else if (attr.n === 'version') {
-                    summary['version'] = attr.v;
+                    summary['version'] = attr.v
                 } else if (attr.n === 'ndex:sourceFormat') {
-                    summary['sourceFormat'] = attr.v;
+                    summary['sourceFormat'] = attr.v
                 } else
                     summary['properties'].push(
                         {
@@ -2461,30 +2402,28 @@ exports.cyNetworkUtils = class CyNetworkUtils {
                     )
             }
         }
-        return summary;
-    };
+        return summary
+    }
 
 
     getDefaultNodeLabel(niceCX, nodeElement) {
         if (nodeElement.n) {
-            return nodeElement.n;
+            return nodeElement.n
         } else if (nodeElement.represents) {
-            return nodeElement.represents;
+            return nodeElement.represents
         } else if (niceCX['functionTerms']) {
-            var functionTerm = niceCX['functionTerms'][nodeElement['@id']];
+            var functionTerm = niceCX['functionTerms'][nodeElement['@id']]
             if (functionTerm) {
-                return stringifyFunctionTerm(functionTerm);
+                return stringifyFunctionTerm(functionTerm)
             }
         }
-
-        return nodeElement['@id'];
-
-    };
+        return nodeElement['@id']
+    }
 
     getProvenanceFromNiceCX(niceCX) {
-        const history = niceCX['provenanceHistory'];
+        const history = niceCX['provenanceHistory']
         if (history !== undefined) {
-            return history.elements[0].entity;
+            return history.elements[0].entity
         }
-    };
+    }
 }
