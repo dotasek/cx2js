@@ -5,6 +5,7 @@ var content = fs.readFileSync('small_graph.cx')
 var rawCX = JSON.parse(content)
 var utils = new cxjs.cyNetworkUtils()
 var niceCX = utils.rawCXtoNiceCX(rawCX)
+fs.writeFileSync('small_graph_nicecx.json', JSON.stringify(niceCX, null, 2))
 //console.log(niceCX)
 var cx2Js = new cxjs.cxToJs(utils)
 var attributeNameMap = {}
@@ -16,7 +17,7 @@ var edgeCSS = _.find(style, {'selector': 'edge'})
 if (edgeCSS && edgeCSS.css && !edgeCSS.css['curve-style']) {
     edgeCSS.css['curve-style'] = 'bezier'
 }
-fs.writeFileSync('default_style', JSON.stringify(cx2Js.getDefaultStyle, null, 2))
+fs.writeFileSync('default_style', JSON.stringify(cx2Js.getDefaultStyle(), null, 2))
 //console.log('Style:')
 fs.writeFileSync('small_graph_style.json', JSON.stringify(style, null, 2))
 var cxBGColor = cx2Js.cyBackgroundColorFromNiceCX(niceCX)
